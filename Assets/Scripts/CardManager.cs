@@ -9,33 +9,33 @@ public class CardManager : MonoBehaviour
     void Awake() => Inst = this;
 
 
-
     #region CardMovementControl
 
     internal void CardMouseOver(Card card)
     {
-        
+
     }
 
     internal void CardMouseExit(Card card)
     {
-        
+
     }
 
     internal void CardMouseDown(Card card)
     {
-        
+
     }
 
     internal void CardMouseUp(Card card)
     {
-        
+
     }
 
     internal void CardMouseDrag(Card card)
     {
-        Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
-        card.transform.position = mousePosition;
+        Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
+        Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        card.transform.position = objPosition;
     }
 
     #endregion
