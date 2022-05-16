@@ -10,6 +10,7 @@ public class Card : MonoBehaviour
     [SerializeField] SpriteRenderer card;
     [SerializeField] TMP_Text nameTMP;
 
+    public GameObject slot;
     public CardData cardData;
     public PRS originPRS;
 
@@ -19,6 +20,8 @@ public class Card : MonoBehaviour
 
         UpdateTMP();
     }
+
+    #region Movement/Visual
 
     public void UpdateTMP()
     {
@@ -73,4 +76,14 @@ public class Card : MonoBehaviour
 
     #endregion
 
+    #endregion
+
+    #region Effect
+
+    public void UseEffect()
+    {
+
+    }
+
+    #endregion
 }
