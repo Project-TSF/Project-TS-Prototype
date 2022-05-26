@@ -16,6 +16,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] Transform availableDeckPos;
     [SerializeField] Transform handDeckPos;
     [SerializeField] Transform discardDeckPos;
+    [SerializeField] GameObject NGCardSlot;
     [SerializeField] GameObject handDeckCollider;
 
     [Space]
@@ -37,7 +38,9 @@ public class CardManager : MonoBehaviour
     {
         SetupSampleDeck();
         SetupAvailableDeck();
+        SetupNGCard();
 
+        addTohandDeck();
         addTohandDeck();
         addTohandDeck();
         addTohandDeck();
@@ -45,6 +48,18 @@ public class CardManager : MonoBehaviour
         addTohandDeck();
 
         CardAlignment();
+    }
+
+    private void SetupNGCard()
+    {
+        Card NGCard = MakeCard(new CardData() { isNGCard = true });
+        NGCard.name = ("NGCard " + NGCard.cardData.cardName + UnityEngine.Random.Range(0, 1000).ToString());
+        NGCard.transform.parent = NGCardSlot.transform;
+        NGCard.transform.position = NGCardSlot.transform.position;
+
+        NGCard.slot = NGCardSlot;
+        NGCard.originPRS = new PRS(NGCard.transform.position, Utils.QI, NGCard.transform.localScale);
+        NGCard.setVisible(true);
     }
 
 
@@ -75,12 +90,12 @@ public class CardManager : MonoBehaviour
         };
     }
 
-    Card MakeCard(CardData cardData) // 카드 Instantiate
+    public Card MakeCard(CardData cardData) // 카드 Instantiate
     {
         var cardObj = Instantiate(cardPrefab, availableDeckPos.position, Utils.QI);
         var card = cardObj.GetComponent<Card>();
         card.Setup(cardData);
-        card.makeVisible(false);
+        card.setVisible(false);
 
         cardObj.name = ("Card " + card.cardData.cardName + UnityEngine.Random.Range(0, 1000).ToString());
         return card;
@@ -124,7 +139,7 @@ public class CardManager : MonoBehaviour
 
         Card card = availableDeck[0];
         handDeck.Add(card);
-        card.makeVisible(true);
+        card.setVisible(true);
         card.transform.parent = handDeckCollider.transform;
         card.slot = handDeckCollider;
         availableDeck.RemoveAt(0);
@@ -148,7 +163,7 @@ public class CardManager : MonoBehaviour
 
         card.MoveTransform(new PRS(discardDeckPos.position, Utils.QI, card.originPRS.scale), true, 0.1f);
 
-        card.makeVisible(false);
+        card.setVisible(false);
 
         // SetOriginOrder();
         CardAlignment();
@@ -179,6 +194,10 @@ public class CardManager : MonoBehaviour
 
     void fitSlotable(Card card, Slot slot)
     {
+        Debug.Log(card.name);
+        Debug.Log(slot.name);
+        Debug.Log("FIT || Card: " + card.name + " | " + "Slot: " + slot.name);
+
         var newPRS = new PRS(slot.transform.position, card.transform.rotation, card.transform.localScale);
         card.originPRS = newPRS;
         card.MoveTransform(newPRS, true, 0.1f);
@@ -186,14 +205,14 @@ public class CardManager : MonoBehaviour
 
         card.slot = slot.gameObject;
         slot.slotedCard = card;
-
-        handDeck.Remove(card);
     }
 
     void returnHandDeck(Card card)
     {
+        Debug.Log("Return || Card: " + card.name);
+
         card.transform.parent = handDeckCollider.transform;
-        
+
         card.slot.GetComponent<Slot>().slotedCard = null;
         card.slot = handDeckCollider;
 
@@ -202,14 +221,16 @@ public class CardManager : MonoBehaviour
 
     void replaceCard(Slot slot, Card originCard, Card replaceCard)
     {
+        Debug.Log("Replace || OriginCard: " + originCard.name + " | " + "ReplaceCard: " + replaceCard.name + " | " + "Slot: " + slot.name);
         returnHandDeck(originCard);
         fitSlotable(replaceCard, slot);
+        handDeck.Remove(replaceCard);
     }
 
     void GetTargetEntity()
     {
         bool existTarget = false;
-        
+
         RaycastHit2D[] hits = Physics2D.RaycastAll(Utils.MousePos, Vector3.forward, Mathf.Infinity);
         foreach (var hit in hits)
         {
@@ -228,6 +249,8 @@ public class CardManager : MonoBehaviour
             targetSlotable = null;
     }
 
+    #region CardMouse
+
     internal void CardMouseOver(Card card)
     {
 
@@ -245,10 +268,30 @@ public class CardManager : MonoBehaviour
 
     internal void CardMouseUp(Card card)
     {
+        Debug.Log("==================MOUSE UP===================");
         GetTargetEntity();
         Debug.Log(card.slot?.name + " -> " + targetSlotable?.name);
 
-        if (card.slot == targetSlotable || !targetSlotable)
+        if (!targetSlotable)
+        {
+            if (card.cardData.isNGCard)
+            {
+                Debug.Log("Destroy NG Card");
+                Destroy(card.gameObject);
+
+                if (card.slot.GetComponent<Slot>())
+                    return;
+                
+                SetupNGCard();
+                return;
+            }
+            Debug.Log("Not Target");
+            card.MoveTransform(card.originPRS, true, 0.1f);
+
+            return;
+        }
+
+        if (card.slot == targetSlotable)
         {
             Debug.Log("Same Target");
             card.MoveTransform(card.originPRS, true, 0.1f);
@@ -256,43 +299,113 @@ public class CardManager : MonoBehaviour
             return;
         }
 
+        Slot targetSlot = targetSlotable.GetComponent<Slot>();
 
-        if (targetSlotable.GetComponent<Slot>())
+        if (targetSlot?.isMoveable != true && targetSlotable != handDeckCollider)
         {
-            Debug.Log("SLOT: " + targetSlotable.name);
-            Slot slot = targetSlotable.GetComponent<Slot>();
+            Debug.Log("Not Moveable");
+            card.MoveTransform(card.originPRS, true, 0.1f);
 
-            if (slot.slotedCard)
+            return;
+        }
+
+
+        if (card.slot == handDeckCollider && targetSlot)
+        {
+            if (targetSlot.slotedCard)
             {
-                replaceCard(slot, slot.slotedCard, card);
+                // 손패 <-> 슬롯 바꾸기
+                replaceCard(targetSlot, targetSlot.slotedCard, card);
             }
             else
             {
-                fitSlotable(card, slot);
+                // 손패 -> 슬롯
+                fitSlotable(card, targetSlot);
+                handDeck.Remove(card);
             }
-            
+
             CardAlignment(); // TODO: replace/fit 하고 CardAlign하기 카드 제대로 안 돌아 온 상태에서 카드 갈아 끼우면 제대로 안 움직여짐
             // TODO: 이거 처리하는거 큐 쓰면 해결 될지도?
         }
-        else if (targetSlotable == handDeckCollider)
+
+        else if (card.slot.GetComponent<Slot>() && targetSlot)
         {
-            Debug.Log("SLOT: " + targetSlotable.name);
-            returnHandDeck(card);
-            CardAlignment();
+            // 슬롯 <-> 슬롯 바꾸기
+            Card cardA = card;
+            Slot slotA = card.slot.GetComponent<Slot>();
+            Card cardB = targetSlot.slotedCard;
+            Slot slotB = targetSlot;
+
+            if (cardB)
+            {   // targetSlot에 카드가 있으면 -> 교체
+                fitSlotable(cardA, slotB);
+                fitSlotable(cardB, slotA);
+            }
+            else
+            {   // targetSlot에 카드가 없으면 -> 옮기기
+                fitSlotable(cardA, slotB);
+                slotA.slotedCard = null;
+            }
         }
+
+        else if (card.slot.GetComponent<Slot>() && targetSlotable == handDeckCollider)
+        {
+            if (card.cardData.isNGCard)
+            {
+                card.MoveTransform(card.originPRS, true, 0.1f);
+            }
+            else
+            {
+                // 슬롯 -> 손패
+                returnHandDeck(card);
+                CardAlignment();
+            }
+        }
+
+        else if (card.slot == NGCardSlot && targetSlotable == handDeckCollider)
+        {
+            Debug.Log("Destroy NG Card");
+            Destroy(card.gameObject);
+            SetupNGCard();
+        }
+
+        else if (card.slot == NGCardSlot && targetSlot)
+        {
+            if (targetSlot.slotedCard)
+            {
+                Debug.Log("Destroy NG Card");
+                Destroy(card.gameObject);
+                SetupNGCard();
+            }
+            else
+            {
+                // NG슬롯 NG카드 -> 슬롯
+                fitSlotable(card, targetSlot);
+                SetupNGCard();
+            }
+        }
+
+
     }
 
     internal void CardMouseDrag(Card card)
     {
+        if (card.slot.GetComponent<Slot>())
+        {
+            if (!card.slot.GetComponent<Slot>().isMoveable) return;
+        }
+
         card.MoveTransform(new PRS(Utils.MousePos, card.transform.rotation, card.transform.localScale), false);
     }
+
+    #endregion
 
     #endregion
 
 
     #region Effect
 
-    
+
 
     #endregion
 }

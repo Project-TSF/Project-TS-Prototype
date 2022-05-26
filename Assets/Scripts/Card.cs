@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 
+[System.Serializable]
 public class Card : MonoBehaviour
 {
     [SerializeField] SpriteRenderer card;
@@ -18,6 +19,8 @@ public class Card : MonoBehaviour
     {
         this.cardData = cardData;
 
+        this.cardData.speed = Random.Range(0, 10);
+
         UpdateTMP();
     }
 
@@ -28,6 +31,7 @@ public class Card : MonoBehaviour
         nameTMP.text = this.cardData.cardName;
         
     }
+
     public void MoveTransform(PRS prs, bool useDotween, float dotweenTime = 0)
     {
         if (useDotween)
@@ -44,10 +48,11 @@ public class Card : MonoBehaviour
         }
     }
 
-    public void makeVisible(bool visibility)
+    public void setVisible(bool visibility)
     {
         transform.gameObject.SetActive(visibility);
     }
+
 
     #region CardMouseControl
     private void OnMouseOver()
@@ -78,11 +83,13 @@ public class Card : MonoBehaviour
 
     #endregion
 
+
     #region Effect
 
     public void UseEffect()
     {
-
+        Debug.Log(name);
+        cardData.UseEffect();
     }
 
     #endregion

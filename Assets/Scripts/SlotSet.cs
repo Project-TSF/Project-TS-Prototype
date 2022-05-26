@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Slot : MonoBehaviour
+public class SlotSet
 {
-    public bool isMoveable;
-    public Card slotedCard;
+    public Slot enemySlot;
+    public Slot mySlot;
 }
