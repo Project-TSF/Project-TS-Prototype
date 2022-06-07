@@ -77,7 +77,7 @@ public class CardManager : MonoBehaviour
     void SetupSampleDeck()
     {
         allCardDeck = new List<Card>() {
-            MakeCard(new CardData()),
+            MakeCard(new CardData()), // TODO: 
             MakeCard(new CardData()),
             MakeCard(new CardData()),
             MakeCard(new CardData()),
@@ -271,6 +271,11 @@ public class CardManager : MonoBehaviour
         Debug.Log("==================MOUSE UP===================");
         GetTargetEntity();
         Debug.Log(card.slot?.name + " -> " + targetSlotable?.name);
+
+        if (card.slot.GetComponent<Slot>()?.isMoveable == false)
+        {
+            return;
+        }
 
         if (!targetSlotable)
         {

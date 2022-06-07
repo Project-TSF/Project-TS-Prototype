@@ -116,7 +116,7 @@ public class BattleManager : MonoBehaviour
         for (int i = 0; i < targetSlots.Count; i++)
         {
             var targetSlotSet = targetSlots[i].mySlot.transform.parent;
-            var newPosition = new Vector3(targetSlotSet.position.x + 5 * i, targetSlotSet.position.y, targetSlotSet.position.z);
+            var newPosition = new Vector3(targetSlotSet.position.x + 5 * i, targetSlotSet.position.y, targetSlotSet.position.z); //TODO: 
             var newPRS = new PRS(newPosition, targetSlotSet.transform.rotation, targetSlotSet.transform.localScale);
             SlotMoveTransform(targetSlotSet, newPRS, 0.3f);
         }
