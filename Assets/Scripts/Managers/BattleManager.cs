@@ -14,7 +14,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] GameObject slotPanel;
     [SerializeField] Slot slotPrefab;
     [SerializeField] Transform slotGenPos;
-    [SerializeField] List<SlotSet> slots;
+    [SerializeField] List<SlotSet> slotsets;
     public int slotAmount;
 
     [Space]
@@ -45,17 +45,17 @@ public class BattleManager : MonoBehaviour
 
     #region Turn
 
-    public void StartTurn()
+    public void StartTurn() // 턴 시작
     {
         MakeSlots(slotAmount);
     }
 
-    public void EndTurn()
+    public void EndTurn() // Turn End 버튼이 눌렸을 때
     {
         Debug.Log("<<END TURN>>");
         
         List<Slot> timedSlotList = new List<Slot>();
-        foreach (SlotSet slotSet in slots)
+        foreach (SlotSet slotSet in slotsets)
         {
             List<Slot> tempSlotSet = GetTimedSlots(slotSet);
 
@@ -77,7 +77,7 @@ public class BattleManager : MonoBehaviour
         GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().TogglePanel();
     }
 
-    List<Slot> GetTimedSlots(SlotSet slotset)
+    List<Slot> GetTimedSlots(SlotSet slotset) //slotset에서 slot에 있는 카드가 빠른 순으로 정렬해서 리턴
     {
         if (slotset.mySlot.slotedCard == null || slotset.enemySlot.slotedCard == null)
         {
@@ -103,26 +103,26 @@ public class BattleManager : MonoBehaviour
 
     #region Slot
 
-    void SlotMoveTransform(Transform obj, PRS prs, float dotweenTime)
+    void SlotMoveTransform(Transform obj, PRS prs, float dotweenTime) // 슬롯 움직이는 함수
     {
         obj.DOMove(prs.pos, dotweenTime);
         obj.DORotateQuaternion(prs.rot, dotweenTime);
         obj.DOScale(prs.scale, dotweenTime);
     }
 
-    void SlotSetsAlignment()
+    void SlotSetsAlignment() // 슬롯 정렬하는 함수
     {
-        var targetSlots = slots;
+        var targetSlots = slotsets;
         for (int i = 0; i < targetSlots.Count; i++)
         {
             var targetSlotSet = targetSlots[i].mySlot.transform.parent;
-            var newPosition = new Vector3(targetSlotSet.position.x + 5 * i, targetSlotSet.position.y, targetSlotSet.position.z); //TODO: 
+            var newPosition = new Vector3(targetSlotSet.position.x + 5 * i, targetSlotSet.position.y, targetSlotSet.position.z);
             var newPRS = new PRS(newPosition, targetSlotSet.transform.rotation, targetSlotSet.transform.localScale);
             SlotMoveTransform(targetSlotSet, newPRS, 0.3f);
         }
     }
 
-    Slot MakeSlot()
+    Slot MakeSlot() // 슬롯 1개 Instantiate하고 return하는 함수
     {
         var slotObj = Instantiate(slotPrefab, slotGenPos.position, Utils.QI);
         var slot = slotObj.GetComponent<Slot>();
@@ -131,7 +131,7 @@ public class BattleManager : MonoBehaviour
         return slot;
     }
 
-    SlotSet MakeSlotSets()
+    SlotSet MakeSlotSets() // SlotSet(슬롯 2개 내꺼 적꺼) Instantiate하고 return하는 함수
     {
         GameObject SlotSetObj = new GameObject("SlotSet " + UnityEngine.Random.Range(0, 1000).ToString());
 
@@ -165,19 +165,19 @@ public class BattleManager : MonoBehaviour
         return new SlotSet() {mySlot = slotMy, enemySlot = slotEnemy};
     }
 
-    Card GetEnemyCard(Slot slotEnemy)
+    Card GetEnemyCard(Slot slotEnemy) // 적 카드를 Enemy에서 불러와 return하는 함수
     {
-        Card tempCard = CardManager.Inst.MakeCard(new CardData());
+        Card tempCard = CardManager.Inst.MakeCard(new CardData()); // TODO: 적 카드 받는 함수 구현
 
         return tempCard;
     }
 
-    void MakeSlots(int amount)
+    void MakeSlots(int amount) // slotset 여러개를 스폰하는 함수
     {
         for (int i = 0; i<amount; i++)
         {
             SlotSet slotSet = MakeSlotSets();
-            slots.Add(slotSet);
+            slotsets.Add(slotSet);
             SlotSetsAlignment();
         }
     }
