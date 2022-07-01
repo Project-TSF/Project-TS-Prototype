@@ -287,6 +287,7 @@ public class CardManager : MonoBehaviour
 
     internal void CardMouseUp(Card card)
     {
+        // TODO: 이거 가끔 카드가 안잡힐 때가 있는거 같은데 애초에 카드를 클릭했다고 인식도 안됨
         // 카드를 움직였을때 어떤 위치로 보내는가 판별하는 코드 TODO: 이거 다른 곳으로 정리해서 옮기기
         Debug.Log("==================MOUSE UP===================");
         GetTargetEntity(); // 카드를 놓았을 때 마우스가 어느 오브젝트 위에서 놓아졌는지 리턴하는 코드
