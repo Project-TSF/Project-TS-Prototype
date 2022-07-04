@@ -183,4 +183,94 @@ public class BattleManager : MonoBehaviour
     }
 
     #endregion
+
+    #region Pawn
+
+        #region Enemy
+
+
+
+        #endregion
+
+    #endregion
+    
+
+    public void test() {
+
+        JsonLoader jsonLoader = new JsonLoader();
+
+        JsonData jsonData = new JsonData()
+        {
+            name = "Spade",
+            health = 10,
+            sanity = 10,    
+            patterns = new List<Pattern>() {
+                new Pattern() {
+                    name = "Pattern 1",
+                    }
+                },
+            triggers = new List<Trigger>() {
+                new Trigger() {
+                    conditions = new List<Condition>() {
+                        new OR() {
+                            conditions = new List<Condition>() {
+                                new LessThan() {
+                                    targetName = "Spade",
+                                    targetVariable = "health",
+                                    value = 5
+                                },
+                                new LessThan() {
+                                    targetName = "Spade",
+                                    targetVariable = "sanity",
+                                    value = 5
+                                }
+                            }
+                        }
+                    },
+                    actions = new List<Action>() {
+                        new BehaviorAttack() {
+                            targetName = "Player",
+                            damage = 5
+                        }
+                    }
+                }
+            }
+        };
+    
+        jsonLoader.SaveJson(jsonData);
+    }
+    
+
+    public object GetVariable(string targetName, string targetVariable)
+    {
+        GameObject obj = GameObject.Find(targetName);
+        object value = obj.GetType().GetField(targetVariable).GetValue(obj);
+        Debug.Log(value);
+        return value;
+    }
+
+    public object GetMethod(string targetName, string targetMethod)
+    {
+        GameObject obj = GameObject.Find(targetName);
+        object value = obj.GetType().GetMethod(targetMethod).Invoke(obj, null);
+        Debug.Log(value);
+        return value;
+    }
+
+    public Condition GetConditionFromString(string conditionName) {
+        switch (conditionName) {
+            case "LessThan":
+                return new LessThan();
+            // case "GreaterThan":
+                // return new GreaterThan();
+            // case "Equal":
+                // return new Equal();
+            case "OR":
+                return new OR();
+            // case "AND":
+                // return new AND();
+            default:
+                return null;
+        }
+    }
 }

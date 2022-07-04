@@ -1,0 +1,62 @@
+{
+  "Enemy": {
+    "Name": "Spade",
+    "Health": 10,
+    "Sanity": null,
+
+    "Pattern": [
+      [
+        {
+          "Action": "!Attack",
+          "Target": "!Player",
+          "Amount": "!Rnd.RndInt(4, 5)"
+        },
+        {
+          "Action": "!Defense",
+          "Target": "!Player",
+          "Amount": 4
+        },
+        {
+          "Action": "!Power",
+          "Target": "!This",
+          "Amount": 1
+        }
+    ],
+    [
+      {
+        "Action": "!Attack",
+        "Target": "!Player",
+        "Amount": "!Rnd.RndInt(4, 5)"
+      },
+      {
+        "Action": "!Power",
+        "Target": "!This",
+        "Amount": 1
+      },
+      {
+        "Action": "Defense",
+        "Target": "Player",
+        "Amount": 4
+      }
+    ]
+  ],
+
+    "Trigger": {
+      "Condition": {
+        "OR": {
+          "this.Health": {
+            "LessThan": 50
+          },
+          "this.SomeCondition": {
+            "Same": 50
+          }
+        }
+      },
+      "Action": {
+        "Action": "Attack",
+        "Target": "Player",
+        "Damage": "Rnd.RndInt(7, 10)"
+      }
+    }
+  }
+}
