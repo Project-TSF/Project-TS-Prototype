@@ -21,7 +21,7 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] TMP_Text healthTMP;
     [SerializeField] TMP_Text sanityTMP;
-    
+
     public int maxHealth;
     public int maxSanity;
     public int currentHealth;
@@ -30,8 +30,9 @@ public class BattleManager : MonoBehaviour
 
     public static BattleManager Inst { get; private set; }
     void Awake() => Inst = this;
-    
-    private void Start() {
+
+    private void Start()
+    {
         StartGame();
     }
 
@@ -53,7 +54,7 @@ public class BattleManager : MonoBehaviour
     public void EndTurn() // Turn End 버튼이 눌렸을 때
     {
         Debug.Log("<<END TURN>>");
-        
+
         List<Slot> timedSlotList = new List<Slot>();
         foreach (SlotSet slotSet in slotsets)
         {
@@ -65,7 +66,7 @@ public class BattleManager : MonoBehaviour
 
                 return;
             }
-            
+
             timedSlotList.AddRange(tempSlotSet);
         }
 
@@ -87,15 +88,15 @@ public class BattleManager : MonoBehaviour
 
         if (slotset.mySlot.slotedCard.cardData.speed < slotset.enemySlot.slotedCard.cardData.speed)
         {
-            return new List<Slot>() {slotset.mySlot, slotset.enemySlot};
+            return new List<Slot>() { slotset.mySlot, slotset.enemySlot };
         }
         else if (slotset.mySlot.slotedCard.cardData.speed > slotset.enemySlot.slotedCard.cardData.speed)
         {
-            return new List<Slot>() {slotset.enemySlot, slotset.mySlot};
+            return new List<Slot>() { slotset.enemySlot, slotset.mySlot };
         }
         else
         {
-            return new List<Slot>() {slotset.mySlot, slotset.enemySlot}; // TODO: 방어/공격 서순 정하기
+            return new List<Slot>() { slotset.mySlot, slotset.enemySlot }; // TODO: 방어/공격 서순 정하기
         }
     }
 
@@ -162,7 +163,7 @@ public class BattleManager : MonoBehaviour
             slotEnemy.slotedCard.transform.localScale);
         slotEnemy.slotedCard.setVisible(true);
 
-        return new SlotSet() {mySlot = slotMy, enemySlot = slotEnemy};
+        return new SlotSet() { mySlot = slotMy, enemySlot = slotEnemy };
     }
 
     Card GetEnemyCard(Slot slotEnemy) // 적 카드를 Enemy에서 불러와 return하는 함수
@@ -174,7 +175,7 @@ public class BattleManager : MonoBehaviour
 
     void MakeSlots(int amount) // slotset 여러개를 스폰하는 함수
     {
-        for (int i = 0; i<amount; i++)
+        for (int i = 0; i < amount; i++)
         {
             SlotSet slotSet = MakeSlotSets();
             slotsets.Add(slotSet);
@@ -186,16 +187,27 @@ public class BattleManager : MonoBehaviour
 
     #region Pawn
 
-        #region Enemy
+    #region Enemy
 
 
-
-        #endregion
 
     #endregion
-    
 
-    public void test() {
+    #endregion
+
+
+    [SerializeField] JsonData jsondata;
+
+    public void test1()
+    {
+        JsonLoader jsonLoader = new JsonLoader();
+        jsondata = jsonLoader.LoadJson("testjson copy");
+
+        
+    }
+
+    public void test()
+    {
 
         JsonLoader jsonLoader = new JsonLoader();
 
@@ -203,43 +215,69 @@ public class BattleManager : MonoBehaviour
         {
             name = "Spade",
             health = 10,
-            sanity = 10,    
+            sanity = 10,
             patterns = new List<Pattern>() {
                 new Pattern() {
                     name = "Pattern 1",
-                    }
-                },
-            triggers = new List<Trigger>() {
-                new Trigger() {
-                    conditions = new List<Condition>() {
-                        new OR() {
-                            conditions = new List<Condition>() {
-                                new LessThan() {
-                                    targetName = "Spade",
-                                    targetVariable = "health",
-                                    value = 5
+                    acts = new List<Act>() {
+                        new Act() {
+                            name = "Act 1",
+                            actions = new List<Action>() {
+                                new Action() {
+                                    actionName = "Damage",
+                                    targetName = "Player",
+                                    value = "2"
                                 },
-                                new LessThan() {
-                                    targetName = "Spade",
-                                    targetVariable = "sanity",
-                                    value = 5
+                                new Action() {
+                                    actionName = "Damage",
+                                    targetName = "Player",
+                                    value = "4"
+                                },
+                                new Action() {
+                                    actionName = "Power",
+                                    targetName = "This",
+                                    value = "2"
                                 }
                             }
                         }
+                    }
+                },
+            },
+            triggers = new List<Trigger>() {
+                new Trigger() {
+                    conditions = new List<Condition>() {
+                        new Condition() {
+                            conditionName = "OR",
+                            conditions = new List<Condition>() {
+                                new Condition() {
+                                    conditionName = "LessThan",
+                                    targetName = "This",
+                                    targetVariable = "Health",
+                                    value = "5"
+                                },
+
+                                new Condition() {
+                                    conditionName = "LessThan",
+                                    targetName = "This",
+                                    targetVariable = "Sanity",
+                                    value = "5"
+                                }
+                            }
+                        },
                     },
-                    actions = new List<Action>() {
-                        new BehaviorAttack() {
+                    action = new Action() {
+                            actionName = "Damage",
                             targetName = "Player",
-                            damage = 5
-                        }
+                            value = "2"
                     }
                 }
             }
         };
-    
+
+
         jsonLoader.SaveJson(jsonData);
     }
-    
+
 
     public object GetVariable(string targetName, string targetVariable)
     {
@@ -255,22 +293,5 @@ public class BattleManager : MonoBehaviour
         object value = obj.GetType().GetMethod(targetMethod).Invoke(obj, null);
         Debug.Log(value);
         return value;
-    }
-
-    public Condition GetConditionFromString(string conditionName) {
-        switch (conditionName) {
-            case "LessThan":
-                return new LessThan();
-            // case "GreaterThan":
-                // return new GreaterThan();
-            // case "Equal":
-                // return new Equal();
-            case "OR":
-                return new OR();
-            // case "AND":
-                // return new AND();
-            default:
-                return null;
-        }
     }
 }

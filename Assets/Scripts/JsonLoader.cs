@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class JsonLoader
 {
-    public static T LoadJson<T>(string path)
+    public JsonData LoadJson(string path)
     {
         string json = Resources.Load<TextAsset>(path).text;
-        return JsonUtility.FromJson<T>(json);
+        return JsonUtility.FromJson<JsonData>(json);
     }
 
     // export to json file
@@ -16,74 +16,50 @@ public class JsonLoader
         string json = JsonUtility.ToJson(obj);
         Debug.Log(json);
     }
-}
 
+    #region CheckCondition
 
-[System.Serializable]
-public class JsonData
-{
-    public string name;
-    public int health;  
-    public int sanity;
-
-    public List<Pattern> patterns;
-
-    public List<Trigger> triggers;
-}
-
-
-#region Trigger
-
-[System.Serializable]
-public class Trigger
-{
-    public List<Condition> conditions;
-    public List<Action> actions;
-}
-
-[System.Serializable]
-public class Condition
-{
-    virtual public bool CheckCondition()
+    public bool CheckCondition(Condition condition)
     {
-        return false;
-    }
-}
-
-[System.Serializable]
-public class OR : Condition
-{
-    public List<Condition> conditions;
-    
-    override public bool CheckCondition()
-    {
-        foreach (Condition condition in conditions)
+        switch (condition.conditionName)
         {
-            if (!condition.CheckCondition()) {
+            case "OR":
+                return checkOR(condition);
+            // case "AND":
+            //     return checkAND(condition);
+            case "LessThan":
+                return checkLessThan(condition);
+            // case "GreaterThan":
+            //     return checkGreaterThan(condition);
+            // case "Equal":
+            //     return checkEqual(condition);
+            // case "NotEqual":
+            //     return checkNotEqual(condition);
+            default:
+                return false;
+        }
+
+    }
+
+    private bool checkOR(Condition conditions)
+    {
+        foreach (Condition condition in conditions.conditions)
+        {
+            if (!CheckCondition(condition))
+            {
                 return false;
             }
         }
 
         return true;
     }
-}
-
-
-[System.Serializable]
-public class LessThan : Condition
-{
-    public string targetName;
-    public string targetVariable;
-
-    public int value;
-
-    override public bool CheckCondition()
+    private bool checkLessThan(Condition condition)
     {
         try
         {
-            int targetValue = (int)BattleManager.Inst.GetVariable(targetName, targetVariable);
+            int targetValue = (int)BattleManager.Inst.GetVariable(condition.targetName, condition.targetVariable);
 
-            if (targetValue < value)
+            if (targetValue < int.Parse(condition.value))
             {
                 Debug.Log("Condition met");
 
@@ -99,6 +75,93 @@ public class LessThan : Condition
 
         return false;
     }
+
+    #endregion
+
+
+    #region GetAction
+
+    public ActionT GetAction(Action action)
+    {
+        switch (action.actionName)
+        {
+            case "Damage":
+                return getDamage(action);
+            case "Power":
+                return getPower(action);
+            // case "Heal":
+            //     return getHeal(action);
+            // case "Sanity":
+            //     return getSanity(action);
+            // case "Health":
+            //     return getHealth(action);
+            // case "Move":
+            //     return getMove(action);
+            // case "Attack":
+            //     return getAttack(action);
+            // case "Defend":
+            //     return getDefend(action);
+            // case "Wait":
+            //     return getWait(action);
+            // case "EndTurn":
+            //     return getEndTurn(action);
+            // case "EndBattle":
+            //     return getEndBattle(action);
+            default:
+                return null;
+        }
+    }
+
+    private ActionT getPower(Action action)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private ActionT getDamage(Action action)
+    {
+        return new BehaviorAttack()
+        {
+            targetName = action.targetName,
+            damage = int.Parse(action.value)
+        };
+    }
+
+    #endregion
+
+}
+
+
+[System.Serializable]
+public class JsonData
+{
+    public string name;
+    public int health;
+    public int sanity;
+
+    public List<Pattern> patterns;
+
+    public List<Trigger> triggers;
+}
+
+
+#region Trigger
+
+[System.Serializable]
+public class Trigger
+{
+    public List<Condition> conditions;
+    public Action action;
+}
+
+[System.Serializable]
+public class Condition
+{
+    public string conditionName;
+    public string targetName;
+    public string targetVariable;
+    public string value;
+
+    public List<Condition> conditions;
 }
 
 #endregion
@@ -122,11 +185,19 @@ public class Act
 [System.Serializable]
 public class Action
 {
-    public virtual void Execute() {}
+    public string actionName;
+    public string targetName;
+    public string value;
 }
 
 [System.Serializable]
-public class BehaviorAttack : Action
+public class ActionT
+{
+    public virtual void Execute() { }
+}
+
+[System.Serializable]
+public class BehaviorAttack : ActionT   // TODO: 가능한 Action들 다 만들기 효과 발동쪽임
 {
     public string targetName;
     public int damage;
