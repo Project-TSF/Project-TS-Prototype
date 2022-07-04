@@ -23,22 +23,23 @@ public class JsonLoader
 public class JsonData
 {
     public string name;
-    public int health;
+    public int health;  
     public int sanity;
 
-    public List<string> patterns;
+    public List<Pattern> patterns;
 
-    public List<string> triggers;
+    public List<Trigger> triggers;
 }
+
+
+#region Trigger
 
 [System.Serializable]
 public class Trigger
 {
-    public List<string> conditions;
-    public List<string> actions;
+    public List<Condition> conditions;
+    public List<Action> actions;
 }
-
-#region Conditions
 
 [System.Serializable]
 public class Condition
@@ -52,12 +53,13 @@ public class Condition
 [System.Serializable]
 public class OR : Condition
 {
-    public List<string> conditions;
+    public List<Condition> conditions;
+    
     override public bool CheckCondition()
     {
-        foreach (string condition in conditions)
+        foreach (Condition condition in conditions)
         {
-            if (!BattleManager.Inst.GetConditionFromString(condition).CheckCondition()) {
+            if (!condition.CheckCondition()) {
                 return false;
             }
         }
@@ -65,6 +67,7 @@ public class OR : Condition
         return true;
     }
 }
+
 
 [System.Serializable]
 public class LessThan : Condition
@@ -74,7 +77,7 @@ public class LessThan : Condition
 
     public int value;
 
-    public override bool CheckCondition()
+    override public bool CheckCondition()
     {
         try
         {
