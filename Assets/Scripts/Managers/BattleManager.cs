@@ -196,87 +196,87 @@ public class BattleManager : MonoBehaviour
     #endregion
 
 
-    [SerializeField] JsonData jsondata;
+    // [SerializeField] JsonData jsondata;
 
-    public void test1()
-    {
-        JsonLoader jsonLoader = new JsonLoader();
-        jsondata = jsonLoader.LoadJson("testjson copy");
+    // public void test1()
+    // {
+    //     JsonLoader jsonLoader = new JsonLoader();
+    //     jsondata = jsonLoader.LoadJson("testjson copy");
 
         
-    }
+    // }
 
-    public void test()
-    {
+    // public void test()
+    // {
 
-        JsonLoader jsonLoader = new JsonLoader();
+    //     JsonLoader jsonLoader = new JsonLoader();
 
-        JsonData jsonData = new JsonData()
-        {
-            name = "Spade",
-            health = 10,
-            sanity = 10,
-            patterns = new List<Pattern>() {
-                new Pattern() {
-                    name = "Pattern 1",
-                    acts = new List<Act>() {
-                        new Act() {
-                            name = "Act 1",
-                            actions = new List<Action>() {
-                                new Action() {
-                                    actionName = "Damage",
-                                    targetName = "Player",
-                                    value = "2"
-                                },
-                                new Action() {
-                                    actionName = "Damage",
-                                    targetName = "Player",
-                                    value = "4"
-                                },
-                                new Action() {
-                                    actionName = "Power",
-                                    targetName = "This",
-                                    value = "2"
-                                }
-                            }
-                        }
-                    }
-                },
-            },
-            triggers = new List<Trigger>() {
-                new Trigger() {
-                    conditions = new List<Condition>() {
-                        new Condition() {
-                            conditionName = "OR",
-                            conditions = new List<Condition>() {
-                                new Condition() {
-                                    conditionName = "LessThan",
-                                    targetName = "This",
-                                    targetVariable = "Health",
-                                    value = "5"
-                                },
+    //     JsonData jsonData = new JsonData()
+    //     {
+    //         name = "Spade",
+    //         health = 10,
+    //         sanity = 10,
+    //         patterns = new List<Pattern>() {
+    //             new Pattern() {
+    //                 name = "Pattern 1",
+    //                 acts = new List<Act>() {
+    //                     new Act() {
+    //                         name = "Act 1",
+    //                         actions = new List<Action>() {
+    //                             new Action() {
+    //                                 actionName = "Damage",
+    //                                 targetName = "Player",
+    //                                 value = "2"
+    //                             },
+    //                             new Action() {
+    //                                 actionName = "Damage",
+    //                                 targetName = "Player",
+    //                                 value = "4"
+    //                             },
+    //                             new Action() {
+    //                                 actionName = "Power",
+    //                                 targetName = "This",
+    //                                 value = "2"
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //         },
+    //         triggers = new List<Trigger>() {
+    //             new Trigger() {
+    //                 conditions = new List<Condition>() {
+    //                     new Condition() {
+    //                         conditionName = "OR",
+    //                         conditions = new List<Condition>() {
+    //                             new Condition() {
+    //                                 conditionName = "LessThan",
+    //                                 targetName = "This",
+    //                                 targetVariable = "Health",
+    //                                 value = "5"
+    //                             },
 
-                                new Condition() {
-                                    conditionName = "LessThan",
-                                    targetName = "This",
-                                    targetVariable = "Sanity",
-                                    value = "5"
-                                }
-                            }
-                        },
-                    },
-                    action = new Action() {
-                            actionName = "Damage",
-                            targetName = "Player",
-                            value = "2"
-                    }
-                }
-            }
-        };
+    //                             new Condition() {
+    //                                 conditionName = "LessThan",
+    //                                 targetName = "This",
+    //                                 targetVariable = "Sanity",
+    //                                 value = "5"
+    //                             }
+    //                         }
+    //                     },
+    //                 },
+    //                 action = new Action() {
+    //                         actionName = "Damage",
+    //                         targetName = "Player",
+    //                         value = "2"
+    //                 }
+    //             }
+    //         }
+    //     };
 
 
-        jsonLoader.SaveJson(jsonData);
-    }
+    //     jsonLoader.SaveJson(jsonData);
+    // }
 
 
     public object GetVariable(string targetName, string targetVariable)
