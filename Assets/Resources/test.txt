@@ -1,0 +1,71 @@
+Enemy : {       // Enemy를 Define 하겠다!
+    ID : "Enemy-ID-SPADE-WALLALLALU-1",     // 이 Enemy의 ID는 Enemy-ID-SPADE-WALLALLALU-1이다. 중복되면 안된다.
+    Name : "Spade",     // 이 Enemy의 이름은 Spade다.
+    HP : 10,        // 이 Enemy의 HP는 10이다.
+    
+    Variable : {        // 변수도 선언할 수 있을지도
+        VARNAME : {},
+        Var1 : "애옹",
+        Var2 : Condtion
+    }
+
+    Pattern : {     // 이 Enemy의 패턴을 정한다.
+        #ACT1 : {
+            Action : Behavior.Attack(Player, 10),       // 행동 구현 1: 함수 버전
+            Action : Behavior.Attack(Player, 10),
+            ...
+        },
+        #ACT2 : {       // 행동 구현 2: 스코프 버전
+            Action : {
+                Behavior : {
+                    Attack : {
+                        Target : "Player",
+                        Damage : 10
+                    }
+                }
+            },
+            Action : {
+                ...
+            }
+        },
+        #ACT3 : {
+            Action : Behavior.Attack : {        // 3: 이건 무슨 혼종...?
+                Target : "Player",
+                Damage : 10
+            }
+        },
+    }
+
+    Trigger : {     // 어떤 조건일때 무언가를 하려면 Trigger을 호출하고
+        Condition : {       // Condition에 조건을 적는다
+            OR : {      // OR이나 AND 같은 부울 논리를 사용할 수 도 있게
+                this.HP : {     // this.를 통해 property?에 접근할 수 있게 한다 this.Game.Player.Potion 이런 식으로 접근할 수 있을 듯
+                    LessThan : 5    // 얘가 조건 아마두
+                },
+                this.SomeTestCondition : False  // 얘가 2번째 조건 아마두
+            }
+        },
+
+        Action : {      // 위 조건을 만족했을 때 행할 일을 적는다
+            Set : {     // Set을 통해서 HP를 바꿀 수 있지 않을까?
+                this : {        // this.Game.Player.Potion 대신, this : { Game : { Player : { Potion : 씀띵 }} } 을 통해 이 Enemy의 property에 접근할 수 있게 할 수도 있다 (패독식 방법 아마두)
+                    HP : 0    // 이 Enemy의 HP를 0으로 바꾼다
+                }
+            }
+        }
+    },
+
+    Trigger : {     // 위와는 다른 또다른 조건문
+        Condition : False,      // False 이런 식으로 항상 X인 것도 만들 수 있을 듯
+        
+        Action : {
+            Set : {
+                this : {
+                    Pattern : {     // Set을 통해서 패턴도 바꿀 수 있지 않을까?
+                        ~~~대충 무슨무슨 패턴
+                    }
+                }
+            }
+        }
+    }
+}

@@ -22,6 +22,11 @@ public class BattleManager : MonoBehaviour
     [SerializeField] TMP_Text healthTMP;    //TODO: 이거 플레이어 클래스로 옮겨야 할지도?
     [SerializeField] TMP_Text sanityTMP;
 
+    public int maxHealth;
+    public int maxSanity;
+    public int currentHealth;
+    public int currentSanity;
+
     [Space]
 
     [SerializeField] Transform PlayerPos;   // 플레이어가 평소 서 있는 위치. 현재 위치와 헷갈릴 수 있다.
@@ -260,4 +265,102 @@ public class BattleManager : MonoBehaviour
     #endregion
 
 
+    // [SerializeField] JsonData jsondata;
+
+    // public void test1()
+    // {
+    //     JsonLoader jsonLoader = new JsonLoader();
+    //     jsondata = jsonLoader.LoadJson("testjson copy");
+
+        
+    // }
+
+    // public void test()
+    // {
+
+    //     JsonLoader jsonLoader = new JsonLoader();
+
+    //     JsonData jsonData = new JsonData()
+    //     {
+    //         name = "Spade",
+    //         health = 10,
+    //         sanity = 10,
+    //         patterns = new List<Pattern>() {
+    //             new Pattern() {
+    //                 name = "Pattern 1",
+    //                 acts = new List<Act>() {
+    //                     new Act() {
+    //                         name = "Act 1",
+    //                         actions = new List<Action>() {
+    //                             new Action() {
+    //                                 actionName = "Damage",
+    //                                 targetName = "Player",
+    //                                 value = "2"
+    //                             },
+    //                             new Action() {
+    //                                 actionName = "Damage",
+    //                                 targetName = "Player",
+    //                                 value = "4"
+    //                             },
+    //                             new Action() {
+    //                                 actionName = "Power",
+    //                                 targetName = "This",
+    //                                 value = "2"
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //         },
+    //         triggers = new List<Trigger>() {
+    //             new Trigger() {
+    //                 conditions = new List<Condition>() {
+    //                     new Condition() {
+    //                         conditionName = "OR",
+    //                         conditions = new List<Condition>() {
+    //                             new Condition() {
+    //                                 conditionName = "LessThan",
+    //                                 targetName = "This",
+    //                                 targetVariable = "Health",
+    //                                 value = "5"
+    //                             },
+
+    //                             new Condition() {
+    //                                 conditionName = "LessThan",
+    //                                 targetName = "This",
+    //                                 targetVariable = "Sanity",
+    //                                 value = "5"
+    //                             }
+    //                         }
+    //                     },
+    //                 },
+    //                 action = new Action() {
+    //                         actionName = "Damage",
+    //                         targetName = "Player",
+    //                         value = "2"
+    //                 }
+    //             }
+    //         }
+    //     };
+
+
+    //     jsonLoader.SaveJson(jsonData);
+    // }
+
+
+    public object GetVariable(string targetName, string targetVariable)
+    {
+        GameObject obj = GameObject.Find(targetName);
+        object value = obj.GetType().GetField(targetVariable).GetValue(obj);
+        Debug.Log(value);
+        return value;
+    }
+
+    public object GetMethod(string targetName, string targetMethod)
+    {
+        GameObject obj = GameObject.Find(targetName);
+        object value = obj.GetType().GetMethod(targetMethod).Invoke(obj, null);
+        Debug.Log(value);
+        return value;
+    }
 }
