@@ -22,31 +22,31 @@ public class TempEnemy
                     new Act()
                     {
                         name = "Act_1",
-                        actions = new List<EnemyAction>()
+                        actions = new List<Effect>()
                         {
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName =  "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
+                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
+                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
+                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
                         }
                     },
                     new Act()
                     {
                         name = "Act_2",
-                        actions = new List<EnemyAction>()
+                        actions = new List<Effect>()
                         {
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
+                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
+                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
+                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
                         }
                     },
                     new Act()
                     {
                         name = "Act_3",
-                        actions = new List<EnemyAction>()
+                        actions = new List<Effect>()
                         {
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
-                            new EnemyAction(){behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
+                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
+                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
+                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
                         }
                     }
                 }

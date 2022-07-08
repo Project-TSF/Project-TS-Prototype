@@ -14,12 +14,12 @@ public class Pattern
 public class Act
 {
     public string name;
-    public List<EnemyAction> actions;
+    public List<Effect> actions;
 }
 
 
 [System.Serializable]
-public class EnemyAction
+public class Effect
 {
     public string name;
     public List<Behavior> behaviors;
