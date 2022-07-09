@@ -6,8 +6,7 @@ using UnityEngine;
 public class Pawn : MonoBehaviour
 {
 
-    // 이 Pawn의 ID입니다. 같은 종류의 Pawn은 모두 같은 ID를 가집니다.
-    // EX) 적A, 적B, 적C가 있을 때, 모두 Spade라면 서로 같은 ID를 가집니다. 애옹이
+    // 이 Pawn의 ID입니다. 다른 ID와 겹치지 않게 항상 유니크해야합니다.
     public string ID { get; }
 
 

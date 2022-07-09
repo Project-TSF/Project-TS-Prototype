@@ -32,7 +32,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Transform PlayerPos;   // 플레이어가 평소 서 있는 위치. 현재 위치와 헷갈릴 수 있다.
     [SerializeField] Transform EnemyPos;
 
-    [SerializeField] Player player;
+    public Player player;
     [SerializeField] List<Enemy> enemyList;
     [SerializeField] Enemy enemyPrefab; 
 
@@ -69,6 +69,32 @@ public class BattleManager : MonoBehaviour
             var tempEnemy = tempEnemyGen.Get_TempEnemy_Spade(MakeEnemy());
             enemyList.Add(tempEnemy);
         }
+
+        Trigger testTrigger = new Trigger() {
+            name = "TestTrigger",
+            conditions = new List<Condition>() {
+                new Condition() {
+                    name = "LessThan",
+                    args = new ConditionArgs[] {
+                        new ConditionArgs() {
+                            name = "pawn",
+                            value = "&Player"
+                        },
+                        new ConditionArgs() {
+                            name = "varName",
+                            value = "health"
+                        },
+                        new ConditionArgs() {
+                            name = "ComparedValue",
+                            value = "50"
+                        }
+                    }
+                }
+            }
+        };
+
+        string json = JsonUtility.ToJson(testTrigger);
+        Debug.Log(json);
 
         // 여기까지
 

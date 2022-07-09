@@ -1269,6 +1269,10 @@ MonoBehaviour:
   slotAmount: 3
   healthTMP: {fileID: 713587133}
   sanityTMP: {fileID: 1456174624}
+  maxHealth: 0
+  maxSanity: 0
+  currentHealth: 0
+  currentSanity: 0
   PlayerPos: {fileID: 1331070178}
   EnemyPos: {fileID: 1516155567}
   player: {fileID: 124583397}

@@ -52,10 +52,29 @@ public class TempEnemy
                 }
         };
 
-        enemy.trigger = new Trigger()
-        {
-
+        enemy.trigger = new Trigger() {
+            name = "TestTrigger",
+            conditions = new List<Condition>() {
+                new Condition() {
+                    name = "LessThan",
+                    args = new ConditionArgs[] {
+                        new ConditionArgs() {
+                            name = "pawn",
+                            value = "&Player"
+                        },
+                        new ConditionArgs() {
+                            name = "varName",
+                            value = "health"
+                        },
+                        new ConditionArgs() {
+                            name = "ComparedValue",
+                            value = "50"
+                        }
+                    }
+                }
+            }
         };
+
 
         return enemy;
     }
