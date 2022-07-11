@@ -1,60 +1,125 @@
 {
-  "name": "Spade",
-  "health": 10,
-  "sanity": 10,
-  "patterns": [
-    {
-      "name": "Pattern 1",
-      "acts": [
-        {
-          "name": "Act 1",
-          "actions": [
-            {
-              "actionName": "Damage",
-              "targetName": "Player",
-              "value": "2"
-            },
-            {
-              "actionName": "Damage",
-              "targetName": "Player",
-              "value": "4"
-            },
-            {
-              "actionName": "Power",
-              "targetName": "This",
-              "value": "2"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "triggers": [
-    {
-      "conditions": [
-        {
-          "conditionName": "OR",
-          "conditions": [
-            {
-              "conditionName": "LessThan",
-              "targetName": "This",
-              "targetVariable": "Health",
-              "value": "5"
-            },
-            {
-              "conditionName": "LessThan",
-              "targetName": "This",
-              "targetVariable": "Sanity",
-              "value": "5"
-            }
-          ]
-        }
-      ],
-      "action": {
-        "actionName": "Damage",
-        "targetName": "Player",
-        "value": "2"
+  "health": 100,
+  "maxHealth": 100,
+  "sanity": 100,
+  "maxSanity": 100,
+  "shield": 0,
+  "pattern": {
+    "acts": [
+      {
+        "name": "Act_1",
+        "actions": [
+          {
+            "name": "Normal_Attack",
+            "behaviors": [
+              {
+                "name": "Behavior_Action_NormalAttack",
+                "args": {
+                  "pawnName": "&Player",
+                  "value": "Function_RandomInt(4, 5)"
+                }
+              }
+            ]
+          },
+          {
+            "name": "Shield",
+            "behaviors": [
+              {
+                "name": "Behavior_Action_GetShield",
+                "args": { "pawnName": "&Self", "value": "4" }
+              }
+            ]
+          },
+          {
+            "name": "Power",
+            "behaviors": [
+              {
+                "name": "Behavior_Buff_Power",
+                "args": { "pawnName": "&Self", "value": "1" }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Act_2",
+        "actions": [
+          {
+            "name": "Normal_Attack",
+            "behaviors": [
+              {
+                "name": "Behavior_Action_NormalAttack",
+                "args": {
+                  "pawnName": "&Player",
+                  "value": "Function_RandomInt(4, 5)"
+                }
+              }
+            ]
+          },
+          {
+            "name": "Power",
+            "behaviors": [
+              {
+                "name": "Behavior_Buff_Power",
+                "args": { "pawnName": "&Self", "value": "1" }
+              }
+            ]
+          },
+          {
+            "name": "Shield",
+            "behaviors": [
+              {
+                "name": "Behavior_Action_GetShield",
+                "args": { "pawnName": "&Self", "value": "4" }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Act_3",
+        "actions": [
+          {
+            "name": "Shield",
+            "behaviors": [
+              {
+                "name": "Behavior_Action_GetShield",
+                "args": { "pawnName": "&Self", "value": "4" }
+              }
+            ]
+          },
+          {
+            "name": "Power",
+            "behaviors": [
+              {
+                "name": "Behavior_Buff_Power",
+                "args": { "pawnName": "&Self", "value": "1" }
+              }
+            ]
+          },
+          {
+            "name": "Normal_Attack",
+            "behaviors": [
+              {
+                "name": "Behavior_Action_NormalAttack",
+                "args": {
+                  "pawnName": "&Player",
+                  "value": "Function_RandomInt(4, 5)"
+                }
+              }
+            ]
+          }
+        ]
       }
-    }
-  ]
+    ]
+  },
+  "trigger": {
+    "name": "TestTrigger",
+    "conditions": [
+      {
+        "name": "LessThan",
+        "args": { "pawnName": "&Player", "varName": "health", "value": "10" }
+      }
+    ]
+  }
 }

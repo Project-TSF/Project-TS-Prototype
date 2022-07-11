@@ -22,31 +22,31 @@ public class TempEnemy
                     new Act()
                     {
                         name = "Act_1",
-                        actions = new List<Effect>()
+                        actions = new List<CardEffect>()
                         {
-                            new Effect(){name="Normal_Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)" }}}},
-                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
-                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
+                            new CardEffect(){name="Normal_Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)" }}}},
+                            new CardEffect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
+                            new CardEffect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
                         }
                     },
                     new Act()
                     {
                         name = "Act_2",
-                        actions = new List<Effect>()
+                        actions = new List<CardEffect>()
                         {
-                            new Effect(){name="Normal_Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)"}}}},
-                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
-                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
+                            new CardEffect(){name="Normal_Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)"}}}},
+                            new CardEffect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
+                            new CardEffect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
                         }
                     },
                     new Act()
                     {
                         name = "Act_3",
-                        actions = new List<Effect>()
+                        actions = new List<CardEffect>()
                         {
-                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
-                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
-                            new Effect(){name="Normal_Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)"}}}},
+                            new CardEffect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
+                            new CardEffect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
+                            new CardEffect(){name="Normal_Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)"}}}},
                         }
                     }
                 }
