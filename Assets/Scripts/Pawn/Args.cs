@@ -7,11 +7,15 @@ public class ArgsTranslator
     public static ArgsTranslator Inst { get; private set; }
     void Awake() => Inst = this;
 
-    public ArgsTranslator()
+    public void MainArgsTranslator(PawnArguments originalArgs)
     {
         try
         {
-            
+            TranslatedPawnArguments translatedArgs = new TranslatedPawnArguments();
+
+            if (originalArgs.pawnName != null) translatedArgs.pawnName = ArgsTranslator_GetPawnFromString(originalArgs.pawnName);
+            if (originalArgs.varName != null && originalArgs.pawnName != null) translatedArgs.varName = ArgsTranslator_GetVariableFromPawn(originalArgs.pawnName, originalArgs.varName);
+            if (originalArgs.value != null) translatedArgs.value = ArgsTranslator_Value(originalArgs.value);
         }
         catch (System.NullReferenceException)
         {
@@ -19,7 +23,7 @@ public class ArgsTranslator
         }
     }
 
-    public int GetVariableFromPawn(string pawn, string varName)
+    public int ArgsTranslator_GetVariableFromPawn(string pawn, string varName)
     {
         try
         {
@@ -34,6 +38,18 @@ public class ArgsTranslator
 
     public Pawn ArgsTranslator_GetPawnFromString(string pawnName)
     {
+        if (pawnName.StartsWith("&"))
+        {
+            if (pawnName == "&Player")
+            {
+                return PawnManager.Inst.player;
+            }
+            else if (pawnName == "&Self")
+            {
+                // TODO: Implant returnning self pawn
+            }
+        }
+
         try
         {
             return GameObject.Find(pawnName).GetComponent<Pawn>();
@@ -45,65 +61,78 @@ public class ArgsTranslator
         }
     }
 
-    public object ArgsTranslator_Function(string funString)
+    public object ArgsTranslator_Value(string funString)
     {
-        var funname = funString.Split('(')[0];
-
-        switch (funname)
+        if (funString.StartsWith("Function"))
         {
-            case "Function_Pawn_LowestHealthEnemy":
-                Debug.Log("Function_Pawn_LowestHealthEnemy");
+            var funname = funString.Split('(')[0];
 
-                // get lowest health pawn
-                Pawn lowestHealthPawn = null;
-                int lowestHealth = int.MaxValue;
-                foreach (Pawn pawn in PawnManager.Inst.enemyList)
-                {
-                    if (pawn.health < lowestHealth)
+            switch (funname)
+            {
+                case "Function_Pawn_LowestHealthEnemy":
+                    Debug.Log("Function_Pawn_LowestHealthEnemy");
+
+                    // get lowest health pawn
+                    Pawn lowestHealthPawn = null;
+                    int lowestHealth = int.MaxValue;
+                    foreach (Pawn pawn in PawnManager.Inst.enemyList)
                     {
-                        lowestHealth = pawn.health;
-                        lowestHealthPawn = pawn;
+                        if (pawn.health < lowestHealth)
+                        {
+                            lowestHealth = pawn.health;
+                            lowestHealthPawn = pawn;
+                        }
                     }
-                }
 
-                return lowestHealthPawn;
-
-
-            case "Function_Random_Int":
-                Debug.Log("Function_Random_Int");
-                // get random int
-                try{
-                    // parse args from behind of string (ex: "Function_Random_Int(1,10)" => "1,10")
-                    string[] args = funString.Split('(')[1].Split(')')[0].Split(',');
-                    int min = int.Parse(args[0]);
-                    int max = int.Parse(args[1]);
-                    return Random.Range(min, max);
-                }
-                catch(System.NullReferenceException)
-                {
-                    Debug.LogError("Function_Random_Int: args is not found");
-                    return 0;
-                }
+                    return lowestHealthPawn;
 
 
-            case "Function_GetPawnFromString":
-                Debug.Log("Function_GetPawnFromString");
-                // get pawn from string
-                try
-                {
-                    // parse args from behind of string (ex: "Function_GetPawnFromString(Pawn_Enemy_1)" => "Pawn_Enemy_1")
-                    string[] args = funString.Split('(')[1].Split(')')[0].Split(',');
-                    return ArgsTranslator_GetPawnFromString(args[0]);
-                }
-                catch (System.NullReferenceException)
-                {
-                    Debug.LogError("Function_GetPawnFromString: args is not found");
+                case "Function_RandomInt":
+                    Debug.Log("Function_RandomInt");
+                    // get random int
+                    try{
+                        // parse args from behind of string (ex: "Function_Random_Int(1,10)" => "1,10")
+                        string[] args = funString.Split('(')[1].Split(')')[0].Split(',');
+                        int min = int.Parse(args[0]);
+                        int max = int.Parse(args[1]);
+                        return Random.Range(min, max);
+                    }
+                    catch(System.NullReferenceException)
+                    {
+                        Debug.LogError("Function_Random_Int: args is not found");
+                        return 0;
+                    }
+
+
+                case "Function_GetPawnFromString":
+                    Debug.Log("Function_GetPawnFromString");
+                    // get pawn from string
+                    try
+                    {
+                        // parse args from behind of string (ex: "Function_GetPawnFromString(Pawn_Enemy_1)" => "Pawn_Enemy_1")
+                        string[] args = funString.Split('(')[1].Split(')')[0].Split(',');
+                        return ArgsTranslator_GetPawnFromString(args[0]);
+                    }
+                    catch (System.NullReferenceException)
+                    {
+                        Debug.LogError("Function_GetPawnFromString: args is not found");
+                        return null;
+                    }
+
+                default:
                     return null;
-                }
-
-            default:
-                return null;
+            }
         }
+    
+        
+        try
+        {
+            return int.Parse(funString);
+        }
+        catch (System.Exception)
+        { }
+        
+        return funString;
     }
 }
 
@@ -120,5 +149,5 @@ public class TranslatedPawnArguments
 {
     public Pawn pawnName;
     public int varName;
-    public int value;
+    public object value;
 }

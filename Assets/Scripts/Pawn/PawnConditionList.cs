@@ -24,17 +24,17 @@ public class PawnConditionList
 
     #region ValueCompare
     /* 넘겨 받은 숫자와 Pawn의 변수의 크기를 비교하는 함수들 */
-        public bool LessThan(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) < int.Parse(args[0].value);
+        public bool LessThan(PawnArguments[] args) => ArgsTranslator.Inst.ArgsTranslator_GetVariableFromPawn(args[0].pawnName, args[0].varName) < int.Parse(args[0].value);
 
-        public bool Equal(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) == int.Parse(args[0].value);
+        public bool Equal(PawnArguments[] args) => ArgsTranslator.Inst.ArgsTranslator_GetVariableFromPawn(args[0].pawnName, args[0].varName) == int.Parse(args[0].value);
 
-        public bool GreaterThan(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) > int.Parse(args[0].value);
+        public bool GreaterThan(PawnArguments[] args) => ArgsTranslator.Inst.ArgsTranslator_GetVariableFromPawn(args[0].pawnName, args[0].varName) > int.Parse(args[0].value);
 
-        public bool LessThanOrEqual(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) <= int.Parse(args[0].value);
+        public bool LessThanOrEqual(PawnArguments[] args) => ArgsTranslator.Inst.ArgsTranslator_GetVariableFromPawn(args[0].pawnName, args[0].varName) <= int.Parse(args[0].value);
 
-        public bool GreaterThanOrEqual(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) >= int.Parse(args[0].value);
+        public bool GreaterThanOrEqual(PawnArguments[] args) => ArgsTranslator.Inst.ArgsTranslator_GetVariableFromPawn(args[0].pawnName, args[0].varName) >= int.Parse(args[0].value);
 
-        public bool NotEqual(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) != int.Parse(args[0].value);
+        public bool NotEqual(PawnArguments[] args) => ArgsTranslator.Inst.ArgsTranslator_GetVariableFromPawn(args[0].pawnName, args[0].varName) != int.Parse(args[0].value);
 
     #endregion
 }

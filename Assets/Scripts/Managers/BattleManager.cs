@@ -33,7 +33,7 @@ public class BattleManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        PawnManager.Inst.UpdateUI();
+        // PawnManager.Inst.UpdateUI();
     }
 
     #region Turn

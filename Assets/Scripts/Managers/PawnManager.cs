@@ -26,11 +26,7 @@ public class PawnManager : MonoBehaviour
 
         var tempEnemyGen = new TempEnemy();
 
-            // ID = "Player",
-        player.maxHealth = 80;
-        player.health = 80;
-        player.maxSanity = 80;
-        player.sanity = 80;
+        // ID = "Player",
 
         player.modifier_normal_attack = 0;
         player.modifier_defend = 0;
@@ -46,6 +42,8 @@ public class PawnManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(enemyList[0]);
         Debug.Log(json);
+
+        UpdateUI();
 
         // 여기까지
     }

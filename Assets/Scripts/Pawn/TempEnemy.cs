@@ -24,7 +24,7 @@ public class TempEnemy
                         name = "Act_1",
                         actions = new List<Effect>()
                         {
-                            new Effect(){name="Normal_Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)"}}}},
+                            new Effect(){name="Normal_Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)" }}}},
                             new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
                             new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
                         }
