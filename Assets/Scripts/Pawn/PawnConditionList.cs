@@ -12,43 +12,29 @@ public class PawnConditionList
     {
         try
         {
-            return (bool)this.GetType().GetMethod(condition.name).Invoke(this, condition.args);
+            return (bool)this.GetType().GetMethod(condition.name).Invoke(this, new PawnArguments[] {condition.args});
         }
         catch (System.NullReferenceException)
         {
             Debug.LogError("Condition name is not found");
             return false;
-        }
-
-    }
-
-    public int GetVariableFromPawn(Pawn pawn, string varName)
-    {
-        try
-        {
-            return int.Parse(pawn.GetType().GetField(varName).GetValue(pawn).ToString());
-        }
-        catch (System.NullReferenceException)
-        {
-            Debug.LogError("Variable Name is not found");
-            return 0;
-        }
+        }// TODO: int.parse exception 아마 있을꺼같은데 그거도 해야할듯 근데 어떤 오류인지 몰?루
     }
 
 
     #region ValueCompare
     /* 넘겨 받은 숫자와 Pawn의 변수의 크기를 비교하는 함수들 */
-        public bool LessThan(Pawn pawn, string varName, int compareValue) => GetVariableFromPawn(pawn, varName) < compareValue;
+        public bool LessThan(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) < int.Parse(args[0].value);
 
-        public bool Equal(Pawn pawn, string varName, int compareValue) => GetVariableFromPawn(pawn, varName) == compareValue;
+        public bool Equal(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) == int.Parse(args[0].value);
 
-        public bool GreaterThan(Pawn pawn, string varName, int compareValue) => GetVariableFromPawn(pawn, varName) > compareValue;
+        public bool GreaterThan(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) > int.Parse(args[0].value);
 
-        public bool LessThanOrEqual(Pawn pawn, string varName, int compareValue) => GetVariableFromPawn(pawn, varName) <= compareValue;
+        public bool LessThanOrEqual(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) <= int.Parse(args[0].value);
 
-        public bool GreaterThanOrEqual(Pawn pawn, string varName, int compareValue) => GetVariableFromPawn(pawn, varName) >= compareValue;
+        public bool GreaterThanOrEqual(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) >= int.Parse(args[0].value);
 
-        public bool NotEqual(Pawn pawn, string varName, int compareValue) => GetVariableFromPawn(pawn, varName) != compareValue;
+        public bool NotEqual(PawnArguments[] args) => ArgsTranslator.Inst.GetVariableFromPawn(args[0].pawnName, args[0].varName) != int.Parse(args[0].value);
 
     #endregion
 }

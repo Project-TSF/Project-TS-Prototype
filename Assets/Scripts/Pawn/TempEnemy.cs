@@ -24,9 +24,9 @@ public class TempEnemy
                         name = "Act_1",
                         actions = new List<Effect>()
                         {
-                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
-                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
-                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
+                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)"}}}},
+                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
+                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
                         }
                     },
                     new Act()
@@ -34,9 +34,9 @@ public class TempEnemy
                         name = "Act_2",
                         actions = new List<Effect>()
                         {
-                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
-                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
-                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
+                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)"}}}},
+                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
+                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
                         }
                     },
                     new Act()
@@ -44,9 +44,9 @@ public class TempEnemy
                         name = "Act_3",
                         actions = new List<Effect>()
                         {
-                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_GetShield",target = "&Self",value = "4"}}},
-                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Buff_Power",target = "&Self",value = "1"}}},
-                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){behaviorName = "Behavior_Action_NormalAttack",target = "&Player",value = "Function_RandomInt(4, 5)"}}},
+                            new Effect(){name="Shield", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_GetShield",args = new PawnArguments(){pawnName = "&Self",value = "4"}}}},
+                            new Effect(){name="Power", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Buff_Power",args = new PawnArguments(){pawnName = "&Self",value = "1"}}}},
+                            new Effect(){name="Normal Attack", behaviors = new List<Behavior>(){new Behavior(){name = "Behavior_Action_NormalAttack",args = new PawnArguments(){pawnName = "&Player",value = "Function_RandomInt(4, 5)"}}}},
                         }
                     }
                 }
@@ -57,19 +57,10 @@ public class TempEnemy
             conditions = new List<Condition>() {
                 new Condition() {
                     name = "LessThan",
-                    args = new ConditionArgs[] {
-                        new ConditionArgs() {
-                            name = "pawn",
-                            value = "&Player"
-                        },
-                        new ConditionArgs() {
-                            name = "varName",
-                            value = "health"
-                        },
-                        new ConditionArgs() {
-                            name = "ComparedValue",
-                            value = "50"
-                        }
+                    args = new PawnArguments() {
+                        pawnName = "&Player",
+                        varName = "health",
+                        value = "10"
                     }
                 }
             }

@@ -28,7 +28,6 @@ public class Effect
 [System.Serializable]
 public class Behavior
 {
-    public string behaviorName;
-    public string target;
-    public string value;
+    public string name;
+    public PawnArguments args;
 }

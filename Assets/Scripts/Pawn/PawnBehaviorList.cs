@@ -8,33 +8,15 @@ public class PawnBehaviorList
     public static PawnBehaviorList Inst { get; private set; }
     void Awake() => Inst = this;
 
-    public void PawnBehaviorTranslator(string behaviorName, Pawn fromPawn, Pawn toPawn, int amount)  // TODO: 과연 나중에 args가 amount말고도 더 필요할까? args를 넘기는 방법에 대해 고민해 봐야할듯
-
-    // TODO: this.GetType().GetMethod(A).Invoke(this, null); 이거로도 대체가능할지도?
+    public void PawnBehaviorTranslator(Behavior behavior)
     {
-        switch (behaviorName)
+        try
         {
-            case "Behavior_Action_NormalAttack":
-                Behavior_Action_NormalAttack(fromPawn, toPawn, amount);
-                return;
-            case "Behavior_Action_SanityAttack":
-                Behavior_Action_SanityAttack(fromPawn, toPawn, amount);
-                return;
-            case "Behavior_Action_Heal":
-                Behavior_Action_Heal(fromPawn, toPawn, amount);
-                return;
-            case "Behavior_Action_GetShield":
-                Behavior_Action_GetShield(fromPawn, toPawn, amount);
-                return;
-            case "Behavior_Buff_Power":
-                Behavior_Buff_Power(fromPawn, toPawn, amount);
-                return;
-            case "Behavior_Debuff_Weaken":
-                Behavior_Debuff_Weaken(fromPawn, toPawn, amount);
-                return;
-            default:
-                Debug.LogError("Behavior name is not found");
-                return;
+            this.GetType().GetMethod(behavior.name).Invoke(this, new object[] {behavior.args});
+        }
+        catch (System.NullReferenceException)
+        {
+            Debug.LogError("Condition name is not found");
         }
     }
 
