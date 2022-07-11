@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using TMPro;
 using DG.Tweening;
 
 public class BattleManager : MonoBehaviour
@@ -17,25 +16,6 @@ public class BattleManager : MonoBehaviour
     [SerializeField] List<SlotSet> slotsets;
     public int slotAmount;
 
-    [Space]
-
-    [SerializeField] TMP_Text healthTMP;    //TODO: 이거 플레이어 클래스로 옮겨야 할지도?
-    [SerializeField] TMP_Text sanityTMP;
-
-    public int maxHealth;
-    public int maxSanity;
-    public int currentHealth;
-    public int currentSanity;
-
-    [Space]
-
-    [SerializeField] Transform PlayerPos;   // 플레이어가 평소 서 있는 위치. 현재 위치와 헷갈릴 수 있다.
-    [SerializeField] Transform EnemyPos;
-
-    public Player player;
-    [SerializeField] List<Enemy> enemyList;
-    [SerializeField] Enemy enemyPrefab; 
-
 
     public static BattleManager Inst { get; private set; }
     void Awake() => Inst = this;
@@ -47,75 +27,13 @@ public class BattleManager : MonoBehaviour
 
     public void StartBattle()
     {
-
-        // TODO: 디버그
-
-        var tempEnemyGen = new TempEnemy();
-
-            // ID = "Player",
-        player.maxHealth = 80;
-        player.health = 80;
-        player.maxSanity = 80;
-        player.sanity = 80;
-
-        player.modifier_normal_attack = 0;
-        player.modifier_defend = 0;
-
-
-        enemyList = new List<Enemy>();
-        
-        for (var i = 0; i < 1; ++i)
-        {
-            var tempEnemy = tempEnemyGen.Get_TempEnemy_Spade(MakeEnemy());
-            enemyList.Add(tempEnemy);
-        }
-
-        Trigger testTrigger = new Trigger() {
-            name = "TestTrigger",
-            conditions = new List<Condition>() {
-                new Condition() {
-                    name = "LessThan",
-                    args = new ConditionArgs[] {
-                        new ConditionArgs() {
-                            name = "pawn",
-                            value = "&Player"
-                        },
-                        new ConditionArgs() {
-                            name = "varName",
-                            value = "health"
-                        },
-                        new ConditionArgs() {
-                            name = "ComparedValue",
-                            value = "50"
-                        }
-                    }
-                }
-            }
-        };
-
-        string json = JsonUtility.ToJson(testTrigger);
-        Debug.Log(json);
-
-        // 여기까지
-
-
         UpdateUI();
         StartTurn();
     }
 
     public void UpdateUI()
     {
-        healthTMP.text = player.health + " / " + player.maxHealth;
-        sanityTMP.text = player.sanity + " / " + player.maxSanity;
-
-        for (var i = 0; i < enemyList.Count; ++i)
-        {
-            var enemy = enemyList[i];
-            enemy.healthTMP.text = enemy.health + " / " + enemy.maxHealth;
-            enemy.sanityTMP.text = enemy.sanity + " / " + enemy.maxSanity;
-        }
-
-        EnemyAlignment();
+        PawnManager.Inst.UpdateUI();
     }
 
     #region Turn
@@ -259,34 +177,4 @@ public class BattleManager : MonoBehaviour
 
     #endregion
 
-    #region Pawn
-
-    public void PawnMove(Pawn pawn, PRS prs, float dotweenTime) // 폰 움직이는 함수
-    {
-        pawn.transform.DOMove(prs.pos, dotweenTime);
-        pawn.transform.DORotateQuaternion(prs.rot, dotweenTime);
-        pawn.transform.DOScale(prs.scale, dotweenTime);
-    }
-
-    public void EnemyAlignment() // 폰 정렬하는 함수
-    {
-        var targetPawns = enemyList;
-        for (int i = 0; i < targetPawns.Count; i++)
-        {
-            var targetPawn = targetPawns[i].transform;
-            var newPosition = new Vector3(targetPawn.position.x, targetPawn.position.y, targetPawn.position.z);
-            var newPRS = new PRS(newPosition, targetPawn.transform.rotation, targetPawn.transform.localScale);
-            PawnMove(targetPawn.GetComponent<Pawn>(), newPRS, 0.3f);
-        }
-    }
-
-    public Enemy MakeEnemy() // Enemy 1개 Instantiate하고 return하는 함수
-    {
-        var enemyObj = Instantiate(enemyPrefab, EnemyPos.position, Utils.QI);
-        var enemy = enemyObj.GetComponent<Enemy>();
-        enemy.name = ("Enemy " + UnityEngine.Random.Range(0, 1000).ToString());
-        return enemy;
-    }
-
-#endregion
 }
