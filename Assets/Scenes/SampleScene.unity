@@ -158,6 +158,8 @@ MonoBehaviour:
   sanity: 0
   maxSanity: 0
   shield: 0
+  healthTMP: {fileID: 0}
+  sanityTMP: {fileID: 0}
 --- !u!212 &124583398
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1136,6 +1138,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 922755175}
   m_CullTransparentMesh: 1
+--- !u!1 &991361680
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 991361681}
+  - component: {fileID: 991361682}
+  m_Layer: 0
+  m_Name: PawnManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &991361681
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991361680}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1954137000}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &991361682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991361680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 005cd08e9b3aede458dfcf20daa267f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerPos: {fileID: 1331070178}
+  EnemyPos: {fileID: 1516155567}
+  player: {fileID: 124583397}
+  enemyList: []
+  enemyPrefab: {fileID: 8044174844147058722, guid: 0f4ce681cfffcc24ab3ad1976da39521, type: 3}
 --- !u!1 &1078286917
 GameObject:
   m_ObjectHideFlags: 0
@@ -1267,17 +1317,6 @@ MonoBehaviour:
   slotGenPos: {fileID: 1908599405}
   slotsets: []
   slotAmount: 3
-  healthTMP: {fileID: 713587133}
-  sanityTMP: {fileID: 1456174624}
-  maxHealth: 0
-  maxSanity: 0
-  currentHealth: 0
-  currentSanity: 0
-  PlayerPos: {fileID: 1331070178}
-  EnemyPos: {fileID: 1516155567}
-  player: {fileID: 124583397}
-  enemyList: []
-  enemyPrefab: {fileID: 8044174844147058722, guid: 0f4ce681cfffcc24ab3ad1976da39521, type: 3}
 --- !u!1 &1274321416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1974,6 +2013,7 @@ Transform:
   m_Children:
   - {fileID: 653442648}
   - {fileID: 1176866804}
+  - {fileID: 991361681}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
