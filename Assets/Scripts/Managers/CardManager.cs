@@ -80,18 +80,19 @@ public class CardManager : MonoBehaviour
 
     void SetupSampleDeck()
     {
+        TempCard tempcard = new TempCard();
         // 디버그용 샘플덱 생성 코드
         allCardDeck = new List<Card>() {
-            MakeCard(new CardData()), // TODO: 
-            MakeCard(new CardData()),
-            MakeCard(new CardData()),
-            MakeCard(new CardData()),
-            MakeCard(new CardData()),
-            MakeCard(new CardData()),
-            MakeCard(new CardData()),
-            MakeCard(new CardData()),
-            MakeCard(new CardData()),
-            MakeCard(new CardData()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempCard()),
         };
     }
 
@@ -102,7 +103,7 @@ public class CardManager : MonoBehaviour
         card.Setup(cardData);
         card.setVisible(false);
 
-        cardObj.name = ("Card " + card.cardData.cardName + UnityEngine.Random.Range(0, 1000).ToString());
+        cardObj.name = card.cardData.cardName;
         return card;
     }
 
@@ -431,9 +432,18 @@ public class CardManager : MonoBehaviour
     #endregion
 
 
-    #region Effect
+    #region Loading
 
+    public Enemy ReadCardFromJson()
+    {
+        // Instantiate Enemy from Enemy Prefab and Json Enemy Data
+        var enemyObj = Instantiate(cardPrefab);
+        var enemy = enemyObj.GetComponent<Enemy>();
+        var jsonfile = Resources.Load<TextAsset>("testCardjson");
+        JsonUtility.FromJsonOverwrite(jsonfile.text, enemy);
 
+        return enemy;
+    }
 
     #endregion
 }

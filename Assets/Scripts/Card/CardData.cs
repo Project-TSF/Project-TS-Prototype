@@ -6,9 +6,11 @@ using UnityEngine;
 [System.Serializable]
 public class CardData
 {
-    public bool isNGCard;
+    [System.NonSerialized] public bool isNGCard;
     public string cardName;
     public int speed;
+
+    public CardEffect cardEffect;
 
     public void UseEffect()
     {

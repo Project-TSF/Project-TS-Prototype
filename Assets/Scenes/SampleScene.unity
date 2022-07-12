@@ -160,6 +160,8 @@ MonoBehaviour:
   sanity: 80
   maxSanity: 80
   shield: 0
+  modifier_normal_attack: 0
+  modifier_defend: 0
   healthTMP: {fileID: 713587133}
   sanityTMP: {fileID: 1456174624}
 --- !u!212 &124583398
@@ -1183,8 +1185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 005cd08e9b3aede458dfcf20daa267f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerPos: {fileID: 1331070178}
-  EnemyPos: {fileID: 1516155567}
+  playerPos: {fileID: 1331070178}
+  enemyPos: {fileID: 1516155567}
   player: {fileID: 124583397}
   enemyList: []
   enemyPrefab: {fileID: 8044174844147058722, guid: 0f4ce681cfffcc24ab3ad1976da39521, type: 3}
@@ -2034,7 +2036,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2035894218
 Transform:
   m_ObjectHideFlags: 0

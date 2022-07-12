@@ -45,7 +45,7 @@ public class PawnManager : MonoBehaviour
         // Debug.Log(json);
 
         // FROMJSON
-        enemyList.Add(ReadEnemyFromJson());
+        // enemyList.Add(ReadEnemyFromJson());
 
         UpdateUI();
 

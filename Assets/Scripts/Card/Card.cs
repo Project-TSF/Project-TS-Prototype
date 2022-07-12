@@ -21,12 +21,12 @@ public class Card : MonoBehaviour
 
         this.cardData.speed = Random.Range(0, 10);
 
-        UpdateTMP();
+        UpdateUI();
     }
 
     #region Movement/Visual
 
-    public void UpdateTMP()
+    public void UpdateUI()
     {
         nameTMP.text = this.cardData.cardName;
         
