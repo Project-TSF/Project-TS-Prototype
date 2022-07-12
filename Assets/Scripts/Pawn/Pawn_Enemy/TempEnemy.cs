@@ -7,6 +7,7 @@ public class TempEnemy
     public Enemy Get_TempEnemy_Spade(Enemy enemy)
     {
         // ID = "Spade"; 
+        enemy.pawnName = "Spade";
         enemy.health = 100;
         enemy.maxHealth = 100;
         enemy.sanity = 100;

@@ -153,6 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bc7bf86de8ccd340afd94116cc80d8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 
+  pawnName: 
   health: 80
   maxHealth: 80
   sanity: 80
@@ -2032,7 +2034,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2035894218
 Transform:
   m_ObjectHideFlags: 0

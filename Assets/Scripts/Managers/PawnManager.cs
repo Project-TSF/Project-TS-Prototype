@@ -24,9 +24,9 @@ public class PawnManager : MonoBehaviour
     {
         // TODO: 디버그
 
-        var tempEnemyGen = new TempEnemy();
+        // var tempEnemyGen = new TempEnemy();
 
-        // ID = "Player",
+        player.ID = "Player";
 
         player.modifier_normal_attack = 0;
         player.modifier_defend = 0;
@@ -34,14 +34,18 @@ public class PawnManager : MonoBehaviour
 
         enemyList = new List<Enemy>();
         
-        for (var i = 0; i < 1; ++i)
-        {
-            var tempEnemy = tempEnemyGen.Get_TempEnemy_Spade(MakeEnemy());
-            enemyList.Add(tempEnemy);
-        }
+        // for (var i = 0; i < 1; ++i)
+        // {
+        //     var tempEnemy = tempEnemyGen.Get_TempEnemy_Spade(MakeEnemy());
+        //     enemyList.Add(tempEnemy);
+        // }
 
-        string json = JsonUtility.ToJson(enemyList[0]);
-        Debug.Log(json);
+        // TOJSON
+        // string json = JsonUtility.ToJson(enemyList[0]);
+        // Debug.Log(json);
+
+        // FROMJSON
+        enemyList.Add(ReadEnemyFromJson());
 
         UpdateUI();
 
@@ -72,6 +76,29 @@ public class PawnManager : MonoBehaviour
     }
 
     #region Enemy
+
+    public Enemy ReadEnemyFromJson()
+    {
+        // Instantiate Enemy from Enemy Prefab and Json Enemy Data
+        var enemy = Instantiate(enemyPrefab);
+        var jsonfile = Resources.Load<TextAsset>("testjson");
+        Debug.Log(jsonfile.text);
+        var tempEnemy = JsonUtility.FromJson<Enemy>(jsonfile.text);
+
+        enemy.ID = tempEnemy.ID;
+        enemy.pawnName = tempEnemy.pawnName;
+        enemy.health = tempEnemy.health;
+        enemy.maxHealth = tempEnemy.maxHealth;
+        enemy.sanity = tempEnemy.sanity;
+        enemy.maxSanity = tempEnemy.maxSanity;
+        enemy.shield = tempEnemy.shield;
+        enemy.modifier_normal_attack = tempEnemy.modifier_normal_attack;
+        enemy.modifier_defend = tempEnemy.modifier_defend;
+        enemy.healthTMP.text = enemy.health + " / " + enemy.maxHealth;
+        enemy.sanityTMP.text = enemy.sanity + " / " + enemy.maxSanity;
+
+        return enemy;
+    }
 
     public void EnemyAlignment() // 폰 정렬하는 함수
     {

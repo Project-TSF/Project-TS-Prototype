@@ -7,27 +7,11 @@ public class ArgsTranslator
     public static ArgsTranslator Inst { get; private set; }
     void Awake() => Inst = this;
 
-    public void MainArgsTranslator(PawnArguments originalArgs)
+    public int ArgsTranslator_GetIntVariableFromPawn(Pawn fromPawn, string pawn, string varName)    // TODO: fromPawn말고 이거 stack 따라 올라갈수 있는 방법 있으려나/ 나 대체 뭘 쓰고 있는거지
     {
         try
         {
-            TranslatedPawnArguments translatedArgs = new TranslatedPawnArguments();
-
-            if (originalArgs.pawnName != null) translatedArgs.pawnName = ArgsTranslator_GetPawnFromString(originalArgs.pawnName);
-            if (originalArgs.varName != null && originalArgs.pawnName != null) translatedArgs.varName = ArgsTranslator_GetVariableFromPawn(originalArgs.pawnName, originalArgs.varName);
-            if (originalArgs.value != null) translatedArgs.value = ArgsTranslator_Value(originalArgs.value);
-        }
-        catch (System.NullReferenceException)
-        {
-            Debug.LogError("Condition name is not found");
-        }
-    }
-
-    public int ArgsTranslator_GetVariableFromPawn(string pawn, string varName)
-    {
-        try
-        {
-            return int.Parse(ArgsTranslator_GetPawnFromString(pawn).GetType().GetField(varName).GetValue(pawn).ToString());
+            return int.Parse(ArgsTranslator_GetPawnFromString(fromPawn, pawn).GetType().GetField(varName).GetValue(pawn).ToString());
         }
         catch (System.NullReferenceException)
         {
@@ -36,7 +20,7 @@ public class ArgsTranslator
         }
     }
 
-    public Pawn ArgsTranslator_GetPawnFromString(string pawnName)
+    public Pawn ArgsTranslator_GetPawnFromString(Pawn fromPawn, string pawnName)
     {
         if (pawnName.StartsWith("&"))
         {
@@ -46,7 +30,7 @@ public class ArgsTranslator
             }
             else if (pawnName == "&Self")
             {
-                // TODO: Implant returnning self pawn
+                return fromPawn;
             }
         }
 
@@ -61,7 +45,7 @@ public class ArgsTranslator
         }
     }
 
-    public object ArgsTranslator_Value(string funString)
+    public object ArgsTranslator_Value(Pawn fromPawn, string funString)
     {
         if (funString.StartsWith("Function"))
         {
@@ -111,7 +95,7 @@ public class ArgsTranslator
                     {
                         // parse args from behind of string (ex: "Function_GetPawnFromString(Pawn_Enemy_1)" => "Pawn_Enemy_1")
                         string[] args = funString.Split('(')[1].Split(')')[0].Split(',');
-                        return ArgsTranslator_GetPawnFromString(args[0]);
+                        return ArgsTranslator_GetPawnFromString(fromPawn, args[0]);
                     }
                     catch (System.NullReferenceException)
                     {
@@ -139,15 +123,8 @@ public class ArgsTranslator
 [System.Serializable]
 public class PawnArguments
 {
+    public Pawn fromPawnName;
     public string pawnName;
     public string varName;
     public string value;
-}
-
-[System.Serializable]
-public class TranslatedPawnArguments
-{
-    public Pawn pawnName;
-    public int varName;
-    public object value;
 }

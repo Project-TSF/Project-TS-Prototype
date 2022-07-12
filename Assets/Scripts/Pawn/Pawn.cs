@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class Pawn : MonoBehaviour
 {
-
+    
     // 이 Pawn의 ID입니다. 다른 ID와 겹치지 않게 항상 유니크해야합니다.
-    public string ID { get; }
+    public string ID;
+
+    // 이름
+    public string pawnName;
 
 
     // 체력
@@ -25,8 +28,8 @@ public class Pawn : MonoBehaviour
 
     #region De/Buff Status
 
-    internal int modifier_normal_attack; // 이 Pawn이 공격할 때 고정 수치를 변화시킵니다. Power/Weaken
-    internal int modifier_defend;   // 이 Pawn이 방어를 할 때 고정 수치를 변화시킵니다. 
+    public int modifier_normal_attack; // 이 Pawn이 공격할 때 고정 수치를 변화시킵니다. Power/Weaken
+    public int modifier_defend;   // 이 Pawn이 방어를 할 때 고정 수치를 변화시킵니다. 
 
     #endregion
 

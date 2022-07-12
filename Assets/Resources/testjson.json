@@ -1,4 +1,6 @@
 {
+  "ID": "TestEnemy_Card_Spade",
+  "pawnName": "Spade",
   "health": 100,
   "maxHealth": 100,
   "sanity": 100,
@@ -26,7 +28,10 @@
             "behaviors": [
               {
                 "name": "Behavior_Action_GetShield",
-                "args": { "pawnName": "&Self", "value": "4" }
+                "args": {
+                  "pawnName": "&Self",
+                  "value": "4"
+                }
               }
             ]
           },
@@ -35,7 +40,10 @@
             "behaviors": [
               {
                 "name": "Behavior_Buff_Power",
-                "args": { "pawnName": "&Self", "value": "1" }
+                "args": {
+                  "pawnName": "&Self",
+                  "value": "1"
+                }
               }
             ]
           }
@@ -61,7 +69,10 @@
             "behaviors": [
               {
                 "name": "Behavior_Buff_Power",
-                "args": { "pawnName": "&Self", "value": "1" }
+                "args": {
+                  "pawnName": "&Self",
+                  "value": "1"
+                }
               }
             ]
           },
@@ -70,7 +81,10 @@
             "behaviors": [
               {
                 "name": "Behavior_Action_GetShield",
-                "args": { "pawnName": "&Self", "value": "4" }
+                "args": {
+                  "pawnName": "&Self",
+                  "value": "4"
+                }
               }
             ]
           }
@@ -84,7 +98,10 @@
             "behaviors": [
               {
                 "name": "Behavior_Action_GetShield",
-                "args": { "pawnName": "&Self", "value": "4" }
+                "args": {
+                  "pawnName": "&Self",
+                  "value": "4"
+                }
               }
             ]
           },
@@ -93,7 +110,10 @@
             "behaviors": [
               {
                 "name": "Behavior_Buff_Power",
-                "args": { "pawnName": "&Self", "value": "1" }
+                "args": {
+                  "pawnName": "&Self",
+                  "value": "1"
+                }
               }
             ]
           },
@@ -118,7 +138,11 @@
     "conditions": [
       {
         "name": "LessThan",
-        "args": { "pawnName": "&Player", "varName": "health", "value": "10" }
+        "args": {
+          "pawnName": "&Player",
+          "varName": "health",
+          "value": "10"
+        }
       }
     ]
   }
