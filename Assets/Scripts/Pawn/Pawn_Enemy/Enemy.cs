@@ -5,13 +5,11 @@ using UnityEngine;
 
 public class Enemy : Pawn
 {
+    [Header("Enemy Attributes")]
+
     // pattern of the pawn
     public Pattern pattern;
 
     // trigger
     public Trigger trigger;
-
-    
-    internal TMPro.TMP_Text healthTMP;
-    internal TMPro.TMP_Text sanityTMP;
 }

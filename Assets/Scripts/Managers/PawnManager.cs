@@ -9,8 +9,8 @@ public class PawnManager : MonoBehaviour
 {
 
 
-    [SerializeField] Transform PlayerPos;   // 플레이어가 평소 서 있는 위치. 현재 위치와 헷갈릴 수 있다.
-    [SerializeField] Transform EnemyPos;
+    [SerializeField] Transform playerPos;   // 플레이어가 평소 서 있는 위치. 현재 위치와 헷갈릴 수 있다.
+    [SerializeField] Transform enemyPos;
 
     public Player player;
     public List<Enemy> enemyList;
@@ -80,20 +80,11 @@ public class PawnManager : MonoBehaviour
     public Enemy ReadEnemyFromJson()
     {
         // Instantiate Enemy from Enemy Prefab and Json Enemy Data
-        var enemy = Instantiate(enemyPrefab);
-        var jsonfile = Resources.Load<TextAsset>("testjson");
-        Debug.Log(jsonfile.text);
-        var tempEnemy = JsonUtility.FromJson<Enemy>(jsonfile.text);
+        var enemyObj = Instantiate(enemyPrefab);
+        var enemy = enemyObj.GetComponent<Enemy>();
+        var jsonfile = Resources.Load<TextAsset>("testEnemyjson");
+        JsonUtility.FromJsonOverwrite(jsonfile.text, enemy);
 
-        enemy.ID = tempEnemy.ID;
-        enemy.pawnName = tempEnemy.pawnName;
-        enemy.health = tempEnemy.health;
-        enemy.maxHealth = tempEnemy.maxHealth;
-        enemy.sanity = tempEnemy.sanity;
-        enemy.maxSanity = tempEnemy.maxSanity;
-        enemy.shield = tempEnemy.shield;
-        enemy.modifier_normal_attack = tempEnemy.modifier_normal_attack;
-        enemy.modifier_defend = tempEnemy.modifier_defend;
         enemy.healthTMP.text = enemy.health + " / " + enemy.maxHealth;
         enemy.sanityTMP.text = enemy.sanity + " / " + enemy.maxSanity;
 
@@ -106,18 +97,10 @@ public class PawnManager : MonoBehaviour
         for (int i = 0; i < targetPawns.Count; i++)
         {
             var targetPawn = targetPawns[i].transform;
-            var newPosition = new Vector3(targetPawn.position.x, targetPawn.position.y, targetPawn.position.z);
+            var newPosition = new Vector3(enemyPos.position.x + i * 5, targetPawn.position.y, targetPawn.position.z);
             var newPRS = new PRS(newPosition, targetPawn.transform.rotation, targetPawn.transform.localScale);
-            PawnMove(targetPawn.GetComponent<Pawn>(), newPRS, 0.3f);
+            PawnMove(targetPawn.GetComponent<Pawn>(), newPRS, 0);
         }
-    }
-
-    public Enemy MakeEnemy() // Enemy 1개 Instantiate하고 return하는 함수
-    {
-        var enemyObj = Instantiate(enemyPrefab, EnemyPos.position, Utils.QI);
-        var enemy = enemyObj.GetComponent<Enemy>();
-        enemy.name = ("Enemy " + UnityEngine.Random.Range(0, 1000).ToString());
-        return enemy;
     }
 
     #endregion

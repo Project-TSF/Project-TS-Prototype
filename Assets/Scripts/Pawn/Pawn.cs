@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+
 
 public class Pawn : MonoBehaviour
 {
@@ -25,13 +27,18 @@ public class Pawn : MonoBehaviour
     // 쉴드
     public int shield;
 
-
-    #region De/Buff Status
+    [Header("Modifiers(De/Buffs)")]
 
     public int modifier_normal_attack; // 이 Pawn이 공격할 때 고정 수치를 변화시킵니다. Power/Weaken
     public int modifier_defend;   // 이 Pawn이 방어를 할 때 고정 수치를 변화시킵니다. 
 
-    #endregion
+
+    [Header("UI Attributes")]
+    
+    public TMP_Text healthTMP;    //TODO: 이거 플레이어 클래스로 옮겨야 할지도?
+    public TMP_Text sanityTMP;
+
+
 
     internal void CallDeath()
     {
