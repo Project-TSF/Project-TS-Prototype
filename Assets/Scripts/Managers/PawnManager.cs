@@ -22,34 +22,14 @@ public class PawnManager : MonoBehaviour
 
     void Start()
     {
-        // TODO: 디버그
+        enemyList = new List<Enemy>();
 
         // var tempEnemyGen = new TempEnemy();
-
-        player.ID = "Player";
-
-        player.modifier_normal_attack = 0;
-        player.modifier_defend = 0;
-
-
-        enemyList = new List<Enemy>();
+        // enemyList.Add(tempEnemyGen.GetTempEnemySpade(Instantiate(enemyPrefab, enemyPos)));
+        // Debug.Log(JsonUtility.ToJson(enemyList[0]));
         
-        // for (var i = 0; i < 1; ++i)
-        // {
-        //     var tempEnemy = tempEnemyGen.Get_TempEnemy_Spade(MakeEnemy());
-        //     enemyList.Add(tempEnemy);
-        // }
-
-        // TOJSON
-        // string json = JsonUtility.ToJson(enemyList[0]);
-        // Debug.Log(json);
-
-        // FROMJSON
-        // enemyList.Add(ReadEnemyFromJson());
-
+        
         UpdateUI();
-
-        // 여기까지
     }
 
     public void UpdateUI()
@@ -59,7 +39,7 @@ public class PawnManager : MonoBehaviour
 
         for (var i = 0; i < enemyList.Count; ++i)
         {
-            var enemy = enemyList[i];
+            Enemy enemy = enemyList[i];
             enemy.healthTMP.text = enemy.health + " / " + enemy.maxHealth;
             enemy.sanityTMP.text = enemy.sanity + " / " + enemy.maxSanity;
         }
@@ -77,10 +57,16 @@ public class PawnManager : MonoBehaviour
 
     #region Enemy
 
+    public void GetTestEnemy()
+    {
+        enemyList.Add(ReadEnemyFromJson());
+    }
+
     public Enemy ReadEnemyFromJson()
     {
         // Instantiate Enemy from Enemy Prefab and Json Enemy Data
-        var enemyObj = Instantiate(enemyPrefab);
+        // 테스트용으로 만들어진 json에서 1개 불러오도록 만든거니까 나중에 json구조 여러명 넣어지게 바뀌면 얘도 바꿔야할듯
+        var enemyObj = Instantiate(enemyPrefab, enemyPos);
         var enemy = enemyObj.GetComponent<Enemy>();
         var jsonfile = Resources.Load<TextAsset>("testEnemyjson");
         JsonUtility.FromJsonOverwrite(jsonfile.text, enemy);

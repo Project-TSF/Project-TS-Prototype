@@ -6,128 +6,151 @@
   "sanity": 100,
   "maxSanity": 100,
   "shield": 0,
+  "modifier_normal_attack": 0,
+  "modifier_defend": 0,
   "pattern": {
     "acts": [
       {
         "name": "Act_1",
-        "actions": [
+        "cards": [
           {
-            "name": "Normal_Attack",
-            "behaviors": [
-              {
-                "name": "Behavior_Action_NormalAttack",
-                "args": {
-                  "pawnName": "&Player",
-                  "value": "Function_RandomInt(4, 5)"
+            "cardName": "Normal_Attack",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Action_NormalAttack",
+                  "args": {
+                    "pawnName": "&Player",
+                    "varName": "",
+                    "value": "Function_RandomInt(4, 5)"
+                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           {
-            "name": "Shield",
-            "behaviors": [
-              {
-                "name": "Behavior_Action_GetShield",
-                "args": {
-                  "pawnName": "&Self",
-                  "value": "4"
+            "cardName": "Shield",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Action_GetShield",
+                  "args": { "pawnName": "&Self", "varName": "", "value": "4" }
                 }
-              }
-            ]
+              ]
+            }
           },
           {
-            "name": "Power",
-            "behaviors": [
-              {
-                "name": "Behavior_Buff_Power",
-                "args": {
-                  "pawnName": "&Self",
-                  "value": "1"
+            "cardName": "Power",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Buff_Power",
+                  "args": { "pawnName": "&Self", "varName": "", "value": "1" }
                 }
-              }
-            ]
+              ]
+            }
           }
         ]
       },
       {
         "name": "Act_2",
-        "actions": [
+        "cards": [
           {
-            "name": "Normal_Attack",
-            "behaviors": [
-              {
-                "name": "Behavior_Action_NormalAttack",
-                "args": {
-                  "pawnName": "&Player",
-                  "value": "Function_RandomInt(4, 5)"
+            "cardName": "Normal_Attack",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Action_NormalAttack",
+                  "args": {
+                    "pawnName": "&Player",
+                    "varName": "",
+                    "value": "Function_RandomInt(4, 5)"
+                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           {
-            "name": "Power",
-            "behaviors": [
-              {
-                "name": "Behavior_Buff_Power",
-                "args": {
-                  "pawnName": "&Self",
-                  "value": "1"
+            "cardName": "Power",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Buff_Power",
+                  "args": { "pawnName": "&Self", "varName": "", "value": "1" }
                 }
-              }
-            ]
+              ]
+            }
           },
           {
-            "name": "Shield",
-            "behaviors": [
-              {
-                "name": "Behavior_Action_GetShield",
-                "args": {
-                  "pawnName": "&Self",
-                  "value": "4"
+            "cardName": "Shield",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Action_GetShield",
+                  "args": { "pawnName": "&Self", "varName": "", "value": "4" }
                 }
-              }
-            ]
+              ]
+            }
           }
         ]
       },
       {
         "name": "Act_3",
-        "actions": [
+        "cards": [
           {
-            "name": "Shield",
-            "behaviors": [
-              {
-                "name": "Behavior_Action_GetShield",
-                "args": {
-                  "pawnName": "&Self",
-                  "value": "4"
+            "cardName": "Shield",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Action_GetShield",
+                  "args": { "pawnName": "&Self", "varName": "", "value": "4" }
                 }
-              }
-            ]
+              ]
+            }
           },
           {
-            "name": "Power",
-            "behaviors": [
-              {
-                "name": "Behavior_Buff_Power",
-                "args": {
-                  "pawnName": "&Self",
-                  "value": "1"
+            "cardName": "Power",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Buff_Power",
+                  "args": { "pawnName": "&Self", "varName": "", "value": "1" }
                 }
-              }
-            ]
+              ]
+            }
           },
           {
-            "name": "Normal_Attack",
-            "behaviors": [
-              {
-                "name": "Behavior_Action_NormalAttack",
-                "args": {
-                  "pawnName": "&Player",
-                  "value": "Function_RandomInt(4, 5)"
+            "cardName": "Normal_Attack",
+            "speed": 0,
+            "cardEffect": {
+              "name": "",
+              "behaviors": [
+                {
+                  "name": "Behavior_Action_NormalAttack",
+                  "args": {
+                    "pawnName": "&Player",
+                    "varName": "",
+                    "value": "Function_RandomInt(4, 5)"
+                  }
                 }
-              }
-            ]
+              ]
+            }
           }
         ]
       }
@@ -138,11 +161,7 @@
     "conditions": [
       {
         "name": "LessThan",
-        "args": {
-          "pawnName": "&Player",
-          "varName": "health",
-          "value": "10"
-        }
+        "args": { "pawnName": "&Player", "varName": "health", "value": "10" }
       }
     ]
   }

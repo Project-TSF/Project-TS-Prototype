@@ -7,9 +7,9 @@ Enemy : {       // Enemy를 Define 하겠다!
         VARNAME : {},
         Var1 : "애옹",
         Var2 : Condtion
-    }
+    },
 
-    Pattern : {     // 이 Enemy의 패턴을 정한다.
+    Pattern : [     // 이 Enemy의 패턴을 정한다.
         #ACT1 : {
             Action : Behavior.Attack(Player, 10),       // 행동 구현 1: 함수 버전
             Action : Behavior.Attack(Player, 10),
@@ -34,7 +34,7 @@ Enemy : {       // Enemy를 Define 하겠다!
                 Damage : 10
             }
         },
-    }
+    ],
 
     Trigger : {     // 어떤 조건일때 무언가를 하려면 Trigger을 호출하고
         Condition : {       // Condition에 조건을 적는다

@@ -123,7 +123,7 @@ public class ArgsTranslator
 [System.Serializable]
 public class PawnArguments
 {
-    public Pawn fromPawnName;
+    [System.NonSerialized] public Pawn fromPawnName;
     public string pawnName;
     public string varName;
     public string value;

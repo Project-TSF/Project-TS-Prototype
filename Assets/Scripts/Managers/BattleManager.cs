@@ -27,8 +27,20 @@ public class BattleManager : MonoBehaviour
 
     public void StartBattle()
     {
-        UpdateUI();
+        // 디버그용
+
+        PawnManager.Inst.player.ID = "Player";
+
+        PawnManager.Inst.player.modifier_normal_attack = 0;
+        PawnManager.Inst.player.modifier_defend = 0;
+        
+
+        PawnManager.Inst.GetTestEnemy();
+
+        // 여기까지 디버그용
+
         StartTurn();
+        UpdateUI();
     }
 
     public void UpdateUI()
@@ -41,6 +53,15 @@ public class BattleManager : MonoBehaviour
     public void StartTurn() // 턴 시작
     {
         MakeSlots(slotAmount);
+        for (int i = 0; i < slotsets.Count; i++)
+        {
+            Debug.Log(i);
+            // CardData card = slotsets[i].enemySlot.slotedCard.cardData;
+            CardData carddata = PawnManager.Inst.enemyList[0].pattern.acts[0].cardDatas[i];
+            // TODO: Json 받아오는거 비동기로 해야하는거가틍네데ㅔ
+
+            // card = carddata;
+        }
     }
 
     public void EndTurn() // Turn End 버튼이 눌렸을 때

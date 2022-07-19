@@ -560,6 +560,7 @@ MonoBehaviour:
   availableDeck: []
   handDeck: []
   discardDeck: []
+  targetSlotable: {fileID: 0}
 --- !u!1 &713587131
 GameObject:
   m_ObjectHideFlags: 0

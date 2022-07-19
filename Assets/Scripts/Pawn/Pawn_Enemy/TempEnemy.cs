@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TempEnemy
 {
-    public Enemy Get_TempEnemy_Spade(Enemy enemy)
+    public Enemy GetTempEnemySpade(Enemy enemy)
     {
         // ID = "Spade"; 
         enemy.pawnName = "Spade";
@@ -77,7 +77,7 @@ public class TempEnemy
                     new Act()
                     {
                         name = "Act_1",
-                        cards = new List<CardData>()
+                        cardDatas = new List<CardData>()
                         {
                             normalAttackCard,
                             shieldCard,
@@ -87,7 +87,7 @@ public class TempEnemy
                     new Act()
                     {
                         name = "Act_2",
-                        cards = new List<CardData>()
+                        cardDatas = new List<CardData>()
                         {
                             normalAttackCard,
                             powerCard,
@@ -97,7 +97,7 @@ public class TempEnemy
                     new Act()
                     {
                         name = "Act_3",
-                        cards = new List<CardData>()
+                        cardDatas = new List<CardData>()
                         {
                             shieldCard,
                             powerCard,
