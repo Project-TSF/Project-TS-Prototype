@@ -1,34 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class PawnBehaviorList
 {
 
-    public static PawnBehaviorList Inst { get; private set; }
-    void Awake() => Inst = this;
-
     public void PawnBehaviorTranslator(string behavior)
     {
         try
         {
-            // Behavior_Name(Behavior_Argument_1, Behavior_Argument_2, ...) Get Behavior_Name as string and Arguments as List<string>
-            string[] behavior_split = behavior.Split('(');
-            string behavior_name = behavior_split[0];
-            List<string> behavior_arguments = new List<string>();
-            if (behavior_split.Length > 1)
+            /* input: string "Behavior_Name(Behavior_Argument_1, Behavior_Argument_2, ...)"
+            Get Behavior_Name as string and Behavior_Arguments as List<string> with Regex
+            Argument can be another "Behavior_Name(Args)"
+            */
+            var behaviorName = Regex.Match(behavior, @"\b[^()]+\((.*)\)$");
+            var behaviorArgs = Regex.Matches(behavior, @"(?:[^,()]+((?:\((?>[^()]+|\((?<open>)|\)(?<-open>))*\)))*)+");
+            
+            Debug.Log("Behavior Name: " + behaviorName.Value);
+            foreach (Match arg in behaviorArgs)
             {
-                string[] behavior_arguments_split = behavior_split[1].Split(')');
-                if (behavior_arguments_split.Length > 1)
-                {
-                    string[] behavior_arguments_split_split = behavior_arguments_split[0].Split(',');
-                    foreach (string behavior_argument in behavior_arguments_split_split)
-                    {
-                        behavior_arguments.Add(behavior_argument);
-                    }
-                }
+                Debug.Log("Behavior Argument: " + arg.Value);
             }
 
+
+            // Debug.Log("Behavior Name: " + behaviorName);
 
             this.GetType().GetMethod(behavior).Invoke(this, new object[] {behavior});
         }

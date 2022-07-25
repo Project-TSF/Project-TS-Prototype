@@ -37,6 +37,9 @@ public class BattleManager : MonoBehaviour
 
         PawnManager.Inst.GetTestEnemy();
 
+        PawnBehaviorList pawnBehaviorList = new PawnBehaviorList();
+        pawnBehaviorList.PawnBehaviorTranslator("Behavior_Action_NormalAttack(SPawn_Player, Function_RandomInt(4, 5))");
+
         // 여기까지 디버그용
 
         StartTurn();
