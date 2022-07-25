@@ -59,7 +59,12 @@ public class PawnManager : MonoBehaviour
 
     public void GetTestEnemy()
     {
-        enemyList.Add(ReadEnemyFromJson());
+        // enemyList.Add(ReadEnemyFromJson());
+        var enemy = Instantiate(enemyPrefab, enemyPos);
+        var enemyData = enemy.GetComponent<Enemy>();
+        var tempEnemy = new TempEnemy();
+        enemyList.Add(tempEnemy.GetTempEnemySpade(enemyData));
+        UpdateUI();
     }
 
     public Enemy ReadEnemyFromJson()

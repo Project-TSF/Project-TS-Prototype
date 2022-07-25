@@ -10,21 +10,10 @@ public class TempCard
 
         cardData.cardName = "Attack";
         cardData.speed = 1;
-        cardData.cardEffect = new CardEffect()
-        {
-            name = "공격",
-            behaviors = new List<Behavior>() {
-                    new Behavior()
-                    {
-                        name = "Behavior_Action_NormalAttack",
-                        args = new PawnArguments()
-                        {
-                            pawnName = "&Player",
-                            value = "Function_RandomInt(4, 5)"
-                        }
-                    }
-                }
-        };
+
+        var attackValue = 4;
+
+        cardData.cardEffect = new List<string> { $"Behavior_Action_NormalAttack({attackValue})" };
 
         return cardData;
     }

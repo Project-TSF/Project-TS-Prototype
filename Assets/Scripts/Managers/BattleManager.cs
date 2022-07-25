@@ -56,9 +56,8 @@ public class BattleManager : MonoBehaviour
         for (int i = 0; i < slotsets.Count; i++)
         {
             Debug.Log(i);
-            // CardData card = slotsets[i].enemySlot.slotedCard.cardData;
+            CardData card = slotsets[i].enemySlot.slotedCard.cardData;
             CardData carddata = PawnManager.Inst.enemyList[0].pattern.acts[0].cardDatas[i];
-            // TODO: Json 받아오는거 비동기로 해야하는거가틍네데ㅔ
 
             // card = carddata;
         }

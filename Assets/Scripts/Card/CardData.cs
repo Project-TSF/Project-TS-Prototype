@@ -10,7 +10,7 @@ public class CardData
     public string cardName;
     public int speed;
 
-    public CardEffect cardEffect;
+    public List<string> cardEffect;
 
     public void UseEffect()
     {

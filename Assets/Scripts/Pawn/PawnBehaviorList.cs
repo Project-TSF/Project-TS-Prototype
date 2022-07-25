@@ -8,11 +8,29 @@ public class PawnBehaviorList
     public static PawnBehaviorList Inst { get; private set; }
     void Awake() => Inst = this;
 
-    public void PawnBehaviorTranslator(Behavior behavior)
+    public void PawnBehaviorTranslator(string behavior)
     {
         try
         {
-            this.GetType().GetMethod(behavior.name).Invoke(this, new object[] {behavior.args});
+            // Behavior_Name(Behavior_Argument_1, Behavior_Argument_2, ...) Get Behavior_Name as string and Arguments as List<string>
+            string[] behavior_split = behavior.Split('(');
+            string behavior_name = behavior_split[0];
+            List<string> behavior_arguments = new List<string>();
+            if (behavior_split.Length > 1)
+            {
+                string[] behavior_arguments_split = behavior_split[1].Split(')');
+                if (behavior_arguments_split.Length > 1)
+                {
+                    string[] behavior_arguments_split_split = behavior_arguments_split[0].Split(',');
+                    foreach (string behavior_argument in behavior_arguments_split_split)
+                    {
+                        behavior_arguments.Add(behavior_argument);
+                    }
+                }
+            }
+
+
+            this.GetType().GetMethod(behavior).Invoke(this, new object[] {behavior});
         }
         catch (System.NullReferenceException)
         {

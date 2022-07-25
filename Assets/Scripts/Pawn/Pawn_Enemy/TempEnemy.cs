@@ -18,56 +18,18 @@ public class TempEnemy
 
         var normalAttackCard = new CardData()
         {
-            cardName = "Normal_Attack",
-            cardEffect = new CardEffect()
-            {
-                behaviors = new List<Behavior>() {
-                    new Behavior()
-                    {
-                        name = "Behavior_Action_NormalAttack",
-                        args = new PawnArguments()
-                        {
-                            pawnName = "&Player",
-                            value = "Function_RandomInt(4, 5)"
-                        }
-                    }
-                }
-            }
+            cardName = "Attack",
+            cardEffect = new List<string> { "Behavior_Action_NormalAttack(SPawn_Player, Function_RandomInt(4, 5))" }
         };
         var shieldCard = new CardData()
         {
             cardName = "Shield",
-            cardEffect = new CardEffect()
-            {
-                behaviors = new List<Behavior>() {
-                    new Behavior() {
-                        name = "Behavior_Action_GetShield",
-                        args = new PawnArguments()
-                        {
-                            pawnName = "&Self",
-                            value = "4"
-                        }
-                    }
-                }
-            }
+            cardEffect = new List<string> { "Behaviour_Action_GetShield(SPawn_Self, 4)" }
         };
         var powerCard = new CardData()
         {
             cardName = "Power",
-            cardEffect = new CardEffect()
-            {
-                behaviors = new List<Behavior>() {
-                    new Behavior()
-                    {
-                        name = "Behavior_Buff_Power",
-                        args = new PawnArguments()
-                        {
-                            pawnName = "&Self",
-                            value = "1"
-                        }
-                    }
-                }
-            }
+            cardEffect = new List<string> { "Behavior_Buff_Power(SPawn_Self, 1)" }
         };
 
         enemy.pattern = new Pattern()
@@ -105,21 +67,6 @@ public class TempEnemy
                         }
                     }
                 }
-        };
-
-        enemy.trigger = new Trigger()
-        {
-            name = "TestTrigger",
-            conditions = new List<Condition>() {
-                new Condition() {
-                    name = "LessThan",
-                    args = new PawnArguments() {
-                        pawnName = "&Player",
-                        varName = "health",
-                        value = "10"
-                    }
-                }
-            }
         };
 
 

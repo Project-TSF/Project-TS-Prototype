@@ -16,45 +16,17 @@
           {
             "cardName": "Normal_Attack",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Action_NormalAttack",
-                  "args": {
-                    "pawnName": "&Player",
-                    "varName": "",
-                    "value": "Function_RandomInt(4, 5)"
-                  }
-                }
-              ]
-            }
+            "cardEffect": ["Behavior_Action_NormalAttack(Player, Function_RandomInt(4, 5))"]
           },
           {
             "cardName": "Shield",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Action_GetShield",
-                  "args": { "pawnName": "&Self", "varName": "", "value": "4" }
-                }
-              ]
-            }
+            "cardEffect": ["Behaviour_Action_GetShield(Self, 4)"]
           },
           {
             "cardName": "Power",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Buff_Power",
-                  "args": { "pawnName": "&Self", "varName": "", "value": "1" }
-                }
-              ]
-            }
+            "cardEffect": ["Behavior_Buff_Power(&Self, 1)"]
           }
         ]
       },
@@ -64,45 +36,17 @@
           {
             "cardName": "Normal_Attack",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Action_NormalAttack",
-                  "args": {
-                    "pawnName": "&Player",
-                    "varName": "",
-                    "value": "Function_RandomInt(4, 5)"
-                  }
-                }
-              ]
-            }
+            "cardEffect": ["Behavior_Action_NormalAttack(&Player, !Function_RandomInt(4, 5))"]
           },
           {
             "cardName": "Power",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Buff_Power",
-                  "args": { "pawnName": "&Self", "varName": "", "value": "1" }
-                }
-              ]
-            }
+            "cardEffect": ["Behavior_Buff_Power(&Self, 1)"]
           },
           {
             "cardName": "Shield",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Action_GetShield",
-                  "args": { "pawnName": "&Self", "varName": "", "value": "4" }
-                }
-              ]
-            }
+            "cardEffect": ["Behaviour_Action_GetShield(&Self, 4)"]
           }
         ]
       },
@@ -112,45 +56,17 @@
           {
             "cardName": "Shield",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Action_GetShield",
-                  "args": { "pawnName": "&Self", "varName": "", "value": "4" }
-                }
-              ]
-            }
+            "cardEffect": ["Behaviour_Action_GetShield(&Self, 4)"]
           },
           {
             "cardName": "Power",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Buff_Power",
-                  "args": { "pawnName": "&Self", "varName": "", "value": "1" }
-                }
-              ]
-            }
+            "cardEffect": ["Behavior_Buff_Power(&Self, 1)"]
           },
           {
             "cardName": "Normal_Attack",
             "speed": 0,
-            "cardEffect": {
-              "name": "",
-              "behaviors": [
-                {
-                  "name": "Behavior_Action_NormalAttack",
-                  "args": {
-                    "pawnName": "&Player",
-                    "varName": "",
-                    "value": "Function_RandomInt(4, 5)"
-                  }
-                }
-              ]
-            }
+            "cardEffect": ["Behavior_Action_NormalAttack(&Player, !Function_RandomInt(4, 5))"]
           }
         ]
       }
