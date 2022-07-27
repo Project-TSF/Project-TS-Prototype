@@ -37,6 +37,7 @@ public class Pawn : MonoBehaviour
     
     public TMP_Text healthTMP;    //TODO: 이거 플레이어 클래스로 옮겨야 할지도?
     public TMP_Text sanityTMP;
+    public TMP_Text shieldTMP;
 
 
 

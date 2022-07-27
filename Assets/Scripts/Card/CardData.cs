@@ -10,10 +10,13 @@ public class CardData
     public string cardName;
     public int speed;
 
-    public List<string> cardEffect;
+    public List<System.Action> cardEffect;
 
     public void UseEffect()
     {
-        
+        foreach (System.Action action in cardEffect)
+        {
+            action.Invoke();
+        }
     }
 }

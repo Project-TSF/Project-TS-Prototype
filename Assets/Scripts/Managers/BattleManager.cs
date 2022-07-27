@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using DG.Tweening;
+using System.Threading.Tasks;
 
 public class BattleManager : MonoBehaviour
 {
@@ -37,9 +38,6 @@ public class BattleManager : MonoBehaviour
 
         PawnManager.Inst.GetTestEnemy();
 
-        PawnBehaviorList pawnBehaviorList = new PawnBehaviorList();
-        pawnBehaviorList.PawnBehaviorTranslator("Behavior_Action_NormalAttack(SPawn_Player, Function_RandomInt(4, 5))");
-
         // 여기까지 디버그용
 
         StartTurn();
@@ -48,7 +46,7 @@ public class BattleManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        // PawnManager.Inst.UpdateUI();
+        PawnManager.Inst.UpdateUI();
     }
 
     #region Turn
@@ -58,15 +56,19 @@ public class BattleManager : MonoBehaviour
         MakeSlots(slotAmount);
         for (int i = 0; i < slotsets.Count; i++)
         {
-            Debug.Log(i);
             CardData card = slotsets[i].enemySlot.slotedCard.cardData;
             CardData carddata = PawnManager.Inst.enemyList[0].pattern.acts[0].cardDatas[i];
 
-            // card = carddata;
+            // copying carddata to card
+            card.cardName = carddata.cardName;
+            card.speed = carddata.speed;
+            card.cardEffect = carddata.cardEffect;
+
+            slotsets[i].enemySlot.slotedCard.UpdateUI();
         }
     }
 
-    public void EndTurn() // Turn End 버튼이 눌렸을 때
+    public async void EndTurn() // Turn End 버튼이 눌렸을 때
     {
         Debug.Log("<<END TURN>>");
 
@@ -85,33 +87,15 @@ public class BattleManager : MonoBehaviour
             timedSlotList.AddRange(tempSlotSet);
         }
 
-        foreach (Slot s in timedSlotList)
-        {
-            s.slotedCard.UseEffect();
-        }
-
         GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().TogglePanel();
-    }
+        
+        foreach (Slot slot in timedSlotList)
+        {
+            if (!Application.isPlaying) break;
 
-    List<Slot> GetTimedSlots(SlotSet slotset) //slotset에서 slot에 있는 카드가 빠른 순으로 정렬해서 리턴
-    {
-        if (slotset.mySlot.slotedCard == null || slotset.enemySlot.slotedCard == null)
-        {
-            return null;
-        }
-
-
-        if (slotset.mySlot.slotedCard.cardData.speed < slotset.enemySlot.slotedCard.cardData.speed)
-        {
-            return new List<Slot>() { slotset.mySlot, slotset.enemySlot };
-        }
-        else if (slotset.mySlot.slotedCard.cardData.speed > slotset.enemySlot.slotedCard.cardData.speed)
-        {
-            return new List<Slot>() { slotset.enemySlot, slotset.mySlot };
-        }
-        else
-        {
-            return new List<Slot>() { slotset.mySlot, slotset.enemySlot }; // TODO: 방어/공격 서순 정하기
+            Debug.Log($"Use {slot.slotedCard.cardData.cardName}");
+            slot.slotedCard.UseEffect();
+            await Task.Delay(1500);
         }
     }
 
@@ -151,26 +135,33 @@ public class BattleManager : MonoBehaviour
     {
         GameObject SlotSetObj = new GameObject("SlotSet " + UnityEngine.Random.Range(0, 1000).ToString());
 
+        // 슬롯을 적꺼 하나 내꺼 하나 만듬
         Slot slotMy = MakeSlot();
         Slot slotEnemy = MakeSlot();
 
+        // 적의 카드는 움직일 수 없게, 내 카드는 움직일 수 있게 하기
         slotMy.isMoveable = true;
         slotEnemy.isMoveable = false;
 
+        // Slotset의 위치를 옮기고 hierarchy 정리를 위해서 parent를 지정해주기
         SlotSetObj.transform.parent = slotStartPos.transform;
 
+        // Slot들을 SlotSet 안에 넣어주기
         slotMy.transform.parent = SlotSetObj.transform;
         slotEnemy.transform.parent = SlotSetObj.transform;
 
+        // SlotSet 안에서 Slot들의 위치 조절
         slotMy.transform.localPosition = new Vector3(0, 0, 0);
         slotEnemy.transform.localPosition = new Vector3(0, 8, 0);
 
-
+        // 적 카드 받아오기인데 나중에 위에 디버그쪽에 짜둔거 GetEnemyCard로 옮기기
         slotEnemy.slotedCard = GetEnemyCard(slotEnemy);
 
+        // 카드 내부 데이터 초기화
         slotEnemy.slotedCard.slot = slotEnemy.gameObject;
+        
+        // 적 카드를 적 슬롯 위에 놓기
         slotEnemy.slotedCard.transform.parent = slotEnemy.transform;
-
         slotEnemy.slotedCard.transform.localPosition = new Vector3(0, 0, 0);
         slotEnemy.slotedCard.originPRS = new PRS(
             slotEnemy.slotedCard.transform.position,
@@ -195,6 +186,28 @@ public class BattleManager : MonoBehaviour
             SlotSet slotSet = MakeSlotSets();
             slotsets.Add(slotSet);
             SlotSetsAlignment();
+        }
+    }
+
+    List<Slot> GetTimedSlots(SlotSet slotset) //slotset에서 slot에 있는 카드가 빠른 순으로 정렬해서 리턴
+    {
+        if (slotset.mySlot.slotedCard == null || slotset.enemySlot.slotedCard == null)
+        {
+            return null;
+        }
+
+
+        if (slotset.mySlot.slotedCard.cardData.speed < slotset.enemySlot.slotedCard.cardData.speed)
+        {
+            return new List<Slot>() { slotset.mySlot, slotset.enemySlot };
+        }
+        else if (slotset.mySlot.slotedCard.cardData.speed > slotset.enemySlot.slotedCard.cardData.speed)
+        {
+            return new List<Slot>() { slotset.enemySlot, slotset.mySlot };
+        }
+        else
+        {
+            return new List<Slot>() { slotset.mySlot, slotset.enemySlot }; // TODO: 방어/공격 서순 정하기
         }
     }
 

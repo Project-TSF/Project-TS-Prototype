@@ -16,6 +16,10 @@ public class PawnManager : MonoBehaviour
     public List<Enemy> enemyList;
     [SerializeField] Enemy enemyPrefab;
 
+    [Space]
+
+    [SerializeField] GameObject floatingTextPrefab;
+
     public static PawnManager Inst { get; private set; }
     void Awake() => Inst = this;
 
@@ -29,30 +33,37 @@ public class PawnManager : MonoBehaviour
         // Debug.Log(JsonUtility.ToJson(enemyList[0]));
         
         
-        UpdateUI();
+        // UpdateUI();
     }
 
     public void UpdateUI()
     {
         player.healthTMP.text = player.health + " / " + player.maxHealth;
         player.sanityTMP.text = player.sanity + " / " + player.maxSanity;
+        player.shieldTMP.text = player.shield.ToString();
 
         for (var i = 0; i < enemyList.Count; ++i)
         {
             Enemy enemy = enemyList[i];
             enemy.healthTMP.text = enemy.health + " / " + enemy.maxHealth;
             enemy.sanityTMP.text = enemy.sanity + " / " + enemy.maxSanity;
+            enemy.shieldTMP.text = enemy.shield.ToString();
         }
 
         EnemyAlignment();
     }
-
 
     public void PawnMove(Pawn pawn, PRS prs, float dotweenTime) // 폰 움직이는 함수
     {
         pawn.transform.DOMove(prs.pos, dotweenTime);
         pawn.transform.DORotateQuaternion(prs.rot, dotweenTime);
         pawn.transform.DOScale(prs.scale, dotweenTime);
+    }
+    
+    public void InstFloatingText(Pawn pawn, string text, Color color, float moveSpeed=1.5f)
+    {
+        var floatingText = Instantiate(floatingTextPrefab);
+        floatingText.GetComponent<FloatingText>().StartFloating(pawn, text, color, moveSpeed);
     }
 
     #region Enemy
@@ -78,6 +89,7 @@ public class PawnManager : MonoBehaviour
 
         enemy.healthTMP.text = enemy.health + " / " + enemy.maxHealth;
         enemy.sanityTMP.text = enemy.sanity + " / " + enemy.maxSanity;
+        enemy.shieldTMP.text = enemy.shield.ToString();
 
         return enemy;
     }
@@ -93,6 +105,7 @@ public class PawnManager : MonoBehaviour
             PawnMove(targetPawn.GetComponent<Pawn>(), newPRS, 0);
         }
     }
+
 
     #endregion
 

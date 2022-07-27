@@ -10,6 +10,7 @@ public class Card : MonoBehaviour
 {
     [SerializeField] SpriteRenderer card;
     [SerializeField] TMP_Text nameTMP;
+    [SerializeField] TMP_Text speedTMP;
 
     public GameObject slot;
     public CardData cardData;
@@ -29,7 +30,7 @@ public class Card : MonoBehaviour
     public void UpdateUI()
     {
         nameTMP.text = this.cardData.cardName;
-        
+        speedTMP.text = this.cardData.speed.ToString();
     }
 
     public void MoveTransform(PRS prs, bool useDotween, float dotweenTime = 0)
@@ -88,8 +89,8 @@ public class Card : MonoBehaviour
 
     public void UseEffect()
     {
-        Debug.Log(name);
         cardData.UseEffect();
+        BattleManager.Inst.UpdateUI();
     }
 
     #endregion

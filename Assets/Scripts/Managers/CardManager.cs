@@ -55,10 +55,12 @@ public class CardManager : MonoBehaviour
     private void SetupNGCard()
     {
         // NG카드를 오른쪽 밑에 생성하는 코드
-        Card NGCard = MakeCard(new CardData() { isNGCard = true });
-        NGCard.name = ("NGCard " + NGCard.cardData.cardName + UnityEngine.Random.Range(0, 1000).ToString());
+        Card NGCard = MakeCard(new CardData() { isNGCard = true, cardName = "NG", speed = 0, cardEffect = new List<System.Action>() { () => { Debug.Log("NG"); } } });
+        NGCard.name = "NGCard";
         NGCard.transform.parent = NGCardSlot.transform;
         NGCard.transform.position = NGCardSlot.transform.position;
+
+        NGCard.UpdateUI();
 
         NGCard.slot = NGCardSlot;
         NGCard.originPRS = new PRS(NGCard.transform.position, Utils.QI, NGCard.transform.localScale);
@@ -71,7 +73,7 @@ public class CardManager : MonoBehaviour
     void SetupAvailableDeck()
     {
         // 현재 가지고 있는 카드들을 불러와 이번 전투에서 사용할 카드덱에 채워넣음
-        availableDeck = allCardDeck;
+        availableDeck = ShuffleDeck(allCardDeck);
         foreach (Card card in availableDeck)
         {
             card.transform.parent = availableDeckPos;
@@ -83,16 +85,16 @@ public class CardManager : MonoBehaviour
         TempCard tempcard = new TempCard();
         // 디버그용 샘플덱 생성 코드
         allCardDeck = new List<Card>() {
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempGetShieldCard()),
+            MakeCard(tempcard.GetTempGetShieldCard()),
+            MakeCard(tempcard.GetTempGetShieldCard()),
+            MakeCard(tempcard.GetTempGetShieldCard()),
+            MakeCard(tempcard.GetTempPowerCard()),
         };
     }
 
@@ -130,7 +132,7 @@ public class CardManager : MonoBehaviour
             card.MoveTransform(new PRS(availableDeckPos.position, Utils.QI, card.originPRS.scale), false);
         }
 
-        ShuffleDeck(availableDeck);
+        availableDeck = ShuffleDeck(availableDeck);
     }
 
     void addTohandDeck() // 카드 1개 뽑기

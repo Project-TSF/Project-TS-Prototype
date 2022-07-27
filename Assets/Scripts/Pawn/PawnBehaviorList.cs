@@ -1,36 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using UnityEngine;
+
+using UnityEngine.Events;
 
 public class PawnBehaviorList
 {
+    private static PawnBehaviorList inst;
 
-    public void PawnBehaviorTranslator(string behavior)
+    public static PawnBehaviorList Inst
     {
-        try
+        get
         {
-            /* input: string "Behavior_Name(Behavior_Argument_1, Behavior_Argument_2, ...)"
-            Get Behavior_Name as string and Behavior_Arguments as List<string> with Regex
-            Argument can be another "Behavior_Name(Args)"
-            */
-            var behaviorName = Regex.Match(behavior, @"\b[^()]+\((.*)\)$");
-            var behaviorArgs = Regex.Matches(behavior, @"(?:[^,()]+((?:\((?>[^()]+|\((?<open>)|\)(?<-open>))*\)))*)+");
-            
-            Debug.Log("Behavior Name: " + behaviorName.Value);
-            foreach (Match arg in behaviorArgs)
+            if(null == inst)
             {
-                Debug.Log("Behavior Argument: " + arg.Value);
+                //게임 인스턴스가 없다면 하나 생성해서 넣어준다.
+                inst = new PawnBehaviorList();
             }
-
-
-            // Debug.Log("Behavior Name: " + behaviorName);
-
-            this.GetType().GetMethod(behavior).Invoke(this, new object[] {behavior});
-        }
-        catch (System.NullReferenceException)
-        {
-            Debug.LogError("Condition name is not found");
+            return inst;
         }
     }
 
@@ -51,31 +38,35 @@ public class PawnBehaviorList
         // modifier_normal_attack을 계산한다.
         totalDamageAmount += fromPawn.modifier_normal_attack;
 
+        // Debug.Log($"CurrShield: {toPawn.shield}, Total Damage: {totalDamageAmount}, Target: {toPawn.pawnName}");
 
+        //TODO: Floating message 띄우기
+        if (totalDamageAmount < toPawn.shield)
+        {
+            // 데미지보다 쉴드량이 더 많을 때
+            // Debug.Log("Blocked!");
+            PawnManager.Inst.InstFloatingText(toPawn, $"{totalDamageAmount}", Color.white);
 
-        // toPawn의 방어막
-        if (toPawn.shield > 0)
-        { //TODO: Floating message 띄우기
-            if (totalDamageAmount < toPawn.shield)
-            {
-                // 데미지보다 쉴드량이 더 많을 때
-                toPawn.shield -= totalDamageAmount;
-            }
-            else if (totalDamageAmount > toPawn.shield)
-            {
-                // 데미지보다 쉴드량이 더 적을 때
-                toPawn.shield = 0;
-                toPawn.health -= (totalDamageAmount - toPawn.shield);
-            }
-            else
-            {
-                // 데미지와 쉴드량이 같을 때
-                toPawn.shield = 0;
-            }
+            toPawn.shield -= totalDamageAmount;
+            
         }
+        else if (totalDamageAmount > toPawn.shield)
+        {
+            // 데미지보다 쉴드량이 더 적을 때
+            // Debug.Log($"Damaged: {totalDamageAmount - toPawn.shield}, Target: {toPawn.pawnName}");
 
-        // toPawn의 health를 감소시킨다.
-        toPawn.health = totalDamageAmount > toPawn.health ? 0 : toPawn.health - totalDamageAmount;
+            totalDamageAmount -= toPawn.shield;
+            PawnManager.Inst.InstFloatingText(toPawn, $"{totalDamageAmount}", Color.red);
+            toPawn.shield = 0;
+            toPawn.health -= totalDamageAmount;
+        }
+        else
+        {
+            // 데미지와 쉴드량이 같을 때
+            // Debug.Log("Break!");
+            PawnManager.Inst.InstFloatingText(toPawn, $"{totalDamageAmount}", Color.white);
+            toPawn.shield = 0;
+        }
 
         BattleManager.Inst.UpdateUI();
 
@@ -105,15 +96,14 @@ public class PawnBehaviorList
     public void Behavior_Action_Heal(Pawn fromPawn, Pawn toPawn, int amount)
     {
         /* fromPawn이 toPawn에게 heal만큼 치료한다.*/
-        double totalHealAmount = amount;
+        int totalHealAmount = amount;
 
-        toPawn.health = +int.Parse(totalHealAmount.ToString());  // 적의 체력을 정수만큼 회복시킨다.
+        toPawn.health += totalHealAmount;  // 적의 체력을 정수만큼 회복시킨다.
 
         // 적의 체력이 최대치를 넘지 않았는지 확인한다.
         if (toPawn.health > toPawn.maxHealth) toPawn.health = toPawn.maxHealth;
 
         BattleManager.Inst.UpdateUI();
-
     }
 
     public void Behavior_Action_GetShield(Pawn fromPawn, Pawn toPawn, int amount)
@@ -124,7 +114,11 @@ public class PawnBehaviorList
         // modifier_defend를 계산한다.
         totalShieldAmount += fromPawn.modifier_defend;
 
-        toPawn.shield = totalShieldAmount;  // toPawn의 방어막을 정수만큼 부여시킨다.
+        // Debug.Log($"Add Shield: {totalShieldAmount}, Target: {toPawn.pawnName}");
+
+        toPawn.shield += totalShieldAmount;  // toPawn의 방어막을 정수만큼 부여시킨다.
+
+        PawnManager.Inst.InstFloatingText(toPawn, $"{totalShieldAmount}", Color.blue);
 
         BattleManager.Inst.UpdateUI();
 
@@ -138,8 +132,9 @@ public class PawnBehaviorList
     public void Behavior_Buff_Power(Pawn fromPawn, Pawn toPawn, int amount)
     {
         toPawn.modifier_normal_attack += amount;
-        BattleManager.Inst.UpdateUI();
 
+        PawnManager.Inst.InstFloatingText(toPawn, $"+Power", Color.yellow);
+        BattleManager.Inst.UpdateUI();
     }
 
     #endregion

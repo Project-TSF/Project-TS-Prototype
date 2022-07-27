@@ -19,17 +19,21 @@ public class TempEnemy
         var normalAttackCard = new CardData()
         {
             cardName = "Attack",
-            cardEffect = new List<string> { "Behavior_Action_NormalAttack(SPawn_Player, Function_RandomInt(4, 5))" }
+            cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Action_NormalAttack(enemy, PawnManager.Inst.player, Random.Range(4, 6)) },
+            speed = Random.Range(0, 10)
         };
+
         var shieldCard = new CardData()
         {
             cardName = "Shield",
-            cardEffect = new List<string> { "Behaviour_Action_GetShield(SPawn_Self, 4)" }
+            cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Action_GetShield(enemy, enemy, 5) },
+            speed = Random.Range(0, 10)
         };
         var powerCard = new CardData()
         {
             cardName = "Power",
-            cardEffect = new List<string> { "Behavior_Buff_Power(SPawn_Self, 1)" }
+            cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Buff_Power(enemy, enemy, 1) },
+            speed = Random.Range(0, 10)
         };
 
         enemy.pattern = new Pattern()
