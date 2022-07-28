@@ -7,26 +7,28 @@ using DG.Tweening;
 
 public class CardManager : MonoBehaviour
 {
-    [SerializeField] GameObject cardPrefab; // 카드 프리펩
+    [Header("Decks")]
+    [SerializeField] List<Card> allCardDeck;
+    [SerializeField] List<Card> availableDeck;
+    [SerializeField] List<Card> handDeck;
+    [SerializeField] List<Card> discardDeck;
+    
+    
+    [Header("Card")]
+    public bool isCardSelectable;
+    [SerializeField] GameObject targetSlotable; // 카드를 드래그 하다 마우스를 놓았을 때 그 밑에 있던 오브젝트중 Slotable한 오브젝트
 
-    [Space]
 
+    [Header("Position")]
     [SerializeField] Transform availableDeckPos;
     [SerializeField] Transform handDeckPos;
     [SerializeField] Transform discardDeckPos;
     [SerializeField] GameObject NGCardSlot;
     [SerializeField] GameObject handDeckCollider;
+    
 
-    [Space]
-
-    [SerializeField] List<Card> allCardDeck;
-    [SerializeField] List<Card> availableDeck;
-    [SerializeField] List<Card> handDeck;
-    [SerializeField] List<Card> discardDeck;
-
-    [Space]
-
-    [SerializeField] GameObject targetSlotable; // 카드를 드래그 하다 마우스를 놓았을 때 그 밑에 있던 오브젝트중 Slotable한 오브젝트
+    [Header("Prefabs")]
+    [SerializeField] GameObject cardPrefab; // 카드 프리펩
 
 
     public static CardManager Inst { get; private set; }
@@ -290,7 +292,7 @@ public class CardManager : MonoBehaviour
 
     internal void CardMouseDown(Card card)
     {
-        // card.originPRS = new PRS(card.transform.position, card.transform.rotation, card.transform.localScale);
+
     }
 
     internal void CardMouseUp(Card card)
@@ -298,6 +300,9 @@ public class CardManager : MonoBehaviour
         // TODO: 이거 가끔 카드가 안잡힐 때가 있는거 같은데 애초에 카드를 클릭했다고 인식도 안됨. 아마 TargetSlotable 변수의 업데이트 문제같아오
         // 카드를 움직였을때 어떤 위치로 보내는가 판별하는 코드 TODO: 이거 다른 곳으로 정리해서 옮기기
         Debug.Log("==================MOUSE UP===================");
+
+        if (!isCardSelectable) return; // 카드를 선택할 수 없는 상태이면 아무것도 하지 않는다.
+
         GetTargetEntity(); // 카드를 놓았을 때 마우스가 어느 오브젝트 위에서 놓아졌는지 리턴하는 코드
         Debug.Log(card.slot?.name + " -> " + targetSlotable?.name);
 
@@ -426,6 +431,8 @@ public class CardManager : MonoBehaviour
 
     internal void CardMouseDrag(Card card) // 카드 드래그
     {
+        if (!isCardSelectable) return;  // 카드 선택 불가능 상태이면 드래그 하지 않음
+
         if (card.slot.GetComponent<Slot>())
         {
             if (!card.slot.GetComponent<Slot>().isMoveable) return; // 카드의 슬롯이 있고, Moveable하지 않으면 드래그 하지 않음

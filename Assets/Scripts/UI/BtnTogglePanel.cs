@@ -30,6 +30,8 @@ public class BtnTogglePanel : MonoBehaviour
 
     public async Task OpenPanel()
     {
+        CardManager.Inst.isCardSelectable = false;
+
         Debug.Log("<<Open Slot Panel>>");
         Tween moveY = slotPanel.transform.DOMoveY(0, 0.2f);
 
@@ -37,10 +39,14 @@ public class BtnTogglePanel : MonoBehaviour
 
         isOpenPanel = true;
         toggleBtnText.text = "Close Panel";
+        
+        CardManager.Inst.isCardSelectable = true;
     }
 
     async public Task ClosePanel()
     {
+        CardManager.Inst.isCardSelectable = false;
+
         Debug.Log("<<Close Slot Panel>>");
         Tween moveY = slotPanel.transform.DOMoveY(-30, 0.2f);
 
@@ -49,5 +55,6 @@ public class BtnTogglePanel : MonoBehaviour
         isOpenPanel = false;
         toggleBtnText.text = "Open Panel";
         
+        CardManager.Inst.isCardSelectable = true;
     }
 }

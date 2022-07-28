@@ -552,18 +552,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0e00375cdc0a1447bf990a0110d58ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handDeckCountLimit: 6
-  cardPrefab: {fileID: 4013769833692164968, guid: de6dc5ef2d2faec45a81bf720ba672b0, type: 3}
+  allCardDeck: []
+  availableDeck: []
+  handDeck: []
+  discardDeck: []
+  isCardSelectable: 0
+  targetSlotable: {fileID: 0}
   availableDeckPos: {fileID: 1678601912}
   handDeckPos: {fileID: 420261658}
   discardDeckPos: {fileID: 1659553083}
   NGCardSlot: {fileID: 1858304077}
   handDeckCollider: {fileID: 1795221202}
-  allCardDeck: []
-  availableDeck: []
-  handDeck: []
-  discardDeck: []
-  targetSlotable: {fileID: 0}
+  cardPrefab: {fileID: 4013769833692164968, guid: de6dc5ef2d2faec45a81bf720ba672b0, type: 3}
 --- !u!1 &713587131
 GameObject:
   m_ObjectHideFlags: 0

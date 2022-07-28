@@ -69,6 +69,8 @@ public class BattleManager : MonoBehaviour
         }
 
         CardManager.Inst.PickupCards(6);
+
+        CardManager.Inst.isCardSelectable = true;
     }
 
     public async void EndTurn() // Turn End 버튼이 눌렸을 때
@@ -85,6 +87,7 @@ public class BattleManager : MonoBehaviour
 
         await GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().ClosePanel();
         GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = false;
+        CardManager.Inst.isCardSelectable = false;
         
         //TODO: Delay 말고 다른 방법 찾아보기. 콜백이라던가...?
 
