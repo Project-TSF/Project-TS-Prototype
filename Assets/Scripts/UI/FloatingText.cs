@@ -8,7 +8,7 @@ using DG.Tweening;
 public class FloatingText : MonoBehaviour
 {
 
-    public void StartFloating(Pawn pawn, string text, Color color, float moveSpeed=1.5f)
+    public void StartFloating(Pawn pawn, string text, Color color, float moveSpeed=1f)
     {
         this.transform.SetParent(pawn.transform);
         this.transform.localPosition = new Vector3(0, 6, 0);

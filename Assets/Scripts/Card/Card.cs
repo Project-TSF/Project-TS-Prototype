@@ -4,6 +4,7 @@ using UnityEngine;
 
 using TMPro;
 using DG.Tweening;
+using System.Threading.Tasks;
 
 [System.Serializable]
 public class Card : MonoBehaviour
@@ -54,17 +55,6 @@ public class Card : MonoBehaviour
     {
         transform.gameObject.SetActive(visibility);
     }
-    
-    void UseCardMovement()
-    {
-        Sequence seq = DOTween.Sequence()
-            .Append(transform.DOMove(new Vector3(0, 0, 0), 1f).SetEase(Ease.OutQuad))
-            .Append(transform.DOMove(GameObject.Find("DiscardDeckPos").transform.position, 0.5f).SetEase(Ease.InQuad))
-            .OnComplete(() => 
-        CardManager.Inst.DiscardCard(this))
-       ;
-    }
-
 
     #region CardMouseControl
     private void OnMouseOver()
@@ -98,10 +88,16 @@ public class Card : MonoBehaviour
 
     #region Effect
 
-    public void UseEffect()
+    async public Task UseEffect()
     {
-        UseCardMovement();
-        cardData.UseEffect();
+        Sequence seq = DOTween.Sequence()
+            .Append(transform.DOMove(new Vector3(0, 0, 0), 0.5f).SetEase(Ease.OutQuad))
+            .AppendCallback(() => cardData.UseEffect())
+            .AppendInterval(0.5f)
+            .Append(transform.DOMove(GameObject.Find("DiscardDeckPos").transform.position, 0.5f).SetEase(Ease.InQuad))
+            .OnComplete(() => CardManager.Inst.DiscardCard(this) );
+
+        await seq.AsyncWaitForCompletion();
         BattleManager.Inst.UpdateUI();
     }
 

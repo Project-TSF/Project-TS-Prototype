@@ -75,49 +75,40 @@ public class BattleManager : MonoBehaviour
     {
         Debug.Log("<<END TURN>>");
 
-        List<Slot> timedSlotList = new List<Slot>();
-        foreach (SlotSet slotSet in slotsets)
+        Queue<Slot> timedQueue = GetTimedQueue();
+        if (timedQueue == null)
         {
-            List<Slot> tempSlotSet = GetTimedSlots(slotSet);
+            Debug.Log("Slots are not full");
 
-            if (tempSlotSet == null)
-            {
-                Debug.Log("Slots are not full");
-
-                return;
-            }
-
-            timedSlotList.AddRange(tempSlotSet);
+            return;
         }
 
-        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().ClosePanel();
+        await GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().ClosePanel();
         GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = false;
-
-        await Task.Delay(1000);
         
         //TODO: Delay 말고 다른 방법 찾아보기. 콜백이라던가...?
 
-        foreach (Slot slot in timedSlotList)
+        foreach (Slot slot in timedQueue)
         {
             if (!Application.isPlaying) break;
 
             Debug.Log($"Use {slot.slotedCard.cardData.cardName}");
-            slot.slotedCard.UseEffect();
-            await Task.Delay(1500);
+            await slot.slotedCard.UseEffect();
         }
 
         Debug.Log("<<END TURN>>");
         GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = true;
-        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().OpenPanel();
+        await GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().OpenPanel();
 
-        await Task.Delay(1000);
-
-        CardManager.Inst.ClearHandDeck();
-
-        await Task.Delay(250 * 6);
+        await CardManager.Inst.ClearHandDeck();
 
         currentActNum += 1;
         StartTurn();
+    }
+
+    void UseCardEffectFromQueue()
+    {
+
     }
 
     #endregion
@@ -243,26 +234,35 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    List<Slot> GetTimedSlots(SlotSet slotset) //slotset에서 slot에 있는 카드가 빠른 순으로 정렬해서 리턴
+    Queue<Slot> GetTimedQueue() //slotset에서 slot에 있는 카드가 빠른 순으로 정렬해서 리턴
     {
-        if (slotset.mySlot.slotedCard == null || slotset.enemySlot.slotedCard == null)
+        Queue<Slot> timedQueue = new Queue<Slot>();
+
+        foreach (SlotSet slotset in slotsets)
         {
-            return null;
+            if (slotset.mySlot.slotedCard == null)
+            {
+                return null;
+            }
+
+            if (slotset.mySlot.slotedCard.cardData.speed < slotset.enemySlot.slotedCard.cardData.speed)
+            {
+                timedQueue.Enqueue(slotset.mySlot);
+                timedQueue.Enqueue(slotset.enemySlot);
+            }
+            else if (slotset.mySlot.slotedCard.cardData.speed > slotset.enemySlot.slotedCard.cardData.speed)
+            {
+                timedQueue.Enqueue(slotset.enemySlot);
+                timedQueue.Enqueue(slotset.mySlot);
+            }
+            else
+            {
+                timedQueue.Enqueue(slotset.mySlot);
+                timedQueue.Enqueue(slotset.enemySlot);
+            }
         }
 
-
-        if (slotset.mySlot.slotedCard.cardData.speed < slotset.enemySlot.slotedCard.cardData.speed)
-        {
-            return new List<Slot>() { slotset.mySlot, slotset.enemySlot };
-        }
-        else if (slotset.mySlot.slotedCard.cardData.speed > slotset.enemySlot.slotedCard.cardData.speed)
-        {
-            return new List<Slot>() { slotset.enemySlot, slotset.mySlot };
-        }
-        else
-        {
-            return new List<Slot>() { slotset.mySlot, slotset.enemySlot }; // TODO: 방어/공격 서순 정하기
-        }
+        return timedQueue;
     }
 
     #endregion

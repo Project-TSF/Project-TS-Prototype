@@ -1,14 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using DG.Tweening;
 
 public class CardManager : MonoBehaviour
 {
-    [SerializeField] int handDeckCountLimit; // handdeck에 저장할 카드의 최대 개수
-
-    [Space]
-
     [SerializeField] GameObject cardPrefab; // 카드 프리펩
 
     [Space]
@@ -29,6 +27,7 @@ public class CardManager : MonoBehaviour
     [Space]
 
     [SerializeField] GameObject targetSlotable; // 카드를 드래그 하다 마우스를 놓았을 때 그 밑에 있던 오브젝트중 Slotable한 오브젝트
+
 
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
@@ -88,17 +87,12 @@ public class CardManager : MonoBehaviour
         };
     }
 
-    async internal void ClearHandDeck()
+    async internal Task ClearHandDeck()
     {
         int leftoverHandCardCount = handDeck.Count;
         for (int i = 0; i < leftoverHandCardCount; i++)
         {
-            handDeck[0].GetComponent<Card>().MoveTransform(new PRS(
-                discardDeckPos.position,
-                Utils.QI,
-                handDeck[0].transform.localScale
-            ), true, 0.25f);
-            await System.Threading.Tasks.Task.Delay(250);
+            await handDeck[0].transform.DOMove(discardDeckPos.position, 0.25f).AsyncWaitForCompletion();
             DiscardCard(handDeck[0]);
         }
     }

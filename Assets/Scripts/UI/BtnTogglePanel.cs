@@ -4,6 +4,7 @@ using UnityEngine;
 
 using TMPro;
 using DG.Tweening;
+using System.Threading.Tasks;
 
 public class BtnTogglePanel : MonoBehaviour
 {
@@ -12,34 +13,38 @@ public class BtnTogglePanel : MonoBehaviour
     bool isOpenPanel = true;
     public bool isAvailable = true;
 
-    public void TogglePanel()
+    async public void TogglePanel()
     {
         if (isAvailable)
         {
             if (isOpenPanel)
             {
-                ClosePanel();
+                await ClosePanel();
             }
             else
             {
-                OpenPanel();
+                await OpenPanel();
             }
         }
     }
 
-    public void OpenPanel()
+    public async Task OpenPanel()
     {
         Debug.Log("<<Open Slot Panel>>");
-        slotPanel.transform.DOMoveY(0, 0.2f);
+        Tween moveY = slotPanel.transform.DOMoveY(0, 0.2f);
+
+        await moveY.AsyncWaitForCompletion();
 
         isOpenPanel = true;
         toggleBtnText.text = "Close Panel";
     }
 
-    public void ClosePanel()
+    async public Task ClosePanel()
     {
         Debug.Log("<<Close Slot Panel>>");
-        slotPanel.transform.DOMoveY(-30, 0.2f);
+        Tween moveY = slotPanel.transform.DOMoveY(-30, 0.2f);
+
+        await moveY.AsyncWaitForCompletion();
 
         isOpenPanel = false;
         toggleBtnText.text = "Open Panel";

@@ -68,7 +68,7 @@ public class PawnBehaviorList
             toPawn.shield = 0;
         }
 
-        BattleManager.Inst.UpdateUI();
+
 
         // 적이 죽었는지 확인한다.
         if (toPawn.health <= 0)
@@ -84,7 +84,7 @@ public class PawnBehaviorList
 
         toPawn.sanity -= totalDamageAmount;  // 적의 정신력을 정수만큼 감소시킨다.
 
-        BattleManager.Inst.UpdateUI();
+
 
         // 적의 정신력이 죽었는지 확인한다.
         if (toPawn.sanity < 0)
@@ -103,7 +103,7 @@ public class PawnBehaviorList
         // 적의 체력이 최대치를 넘지 않았는지 확인한다.
         if (toPawn.health > toPawn.maxHealth) toPawn.health = toPawn.maxHealth;
 
-        BattleManager.Inst.UpdateUI();
+
     }
 
     public void Behavior_Action_GetShield(Pawn fromPawn, Pawn toPawn, int amount)
@@ -120,7 +120,7 @@ public class PawnBehaviorList
 
         PawnManager.Inst.InstFloatingText(toPawn, $"{totalShieldAmount}", Color.blue);
 
-        BattleManager.Inst.UpdateUI();
+
 
     }
 
@@ -134,7 +134,7 @@ public class PawnBehaviorList
         toPawn.modifier_normal_attack += amount;
 
         PawnManager.Inst.InstFloatingText(toPawn, $"+Power", Color.yellow);
-        BattleManager.Inst.UpdateUI();
+
     }
 
     #endregion
@@ -145,7 +145,7 @@ public class PawnBehaviorList
     public void Behavior_Debuff_Weaken(Pawn fromPawn, Pawn toPawn, int amount)
     {
         toPawn.modifier_normal_attack -= amount;
-        BattleManager.Inst.UpdateUI();
+
 
     }
 
