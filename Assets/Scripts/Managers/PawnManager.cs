@@ -19,6 +19,7 @@ public class PawnManager : MonoBehaviour
     [Space]
 
     [SerializeField] GameObject floatingTextPrefab;
+    [SerializeField] GameObject buffIndicatorPrefab;
 
     public static PawnManager Inst { get; private set; }
     void Awake() => Inst = this;
@@ -41,6 +42,8 @@ public class PawnManager : MonoBehaviour
         player.healthTMP.text = player.health + " / " + player.maxHealth;
         player.sanityTMP.text = player.sanity + " / " + player.maxSanity;
         player.shieldTMP.text = player.shield.ToString();
+
+        
 
         for (var i = 0; i < enemyList.Count; ++i)
         {
