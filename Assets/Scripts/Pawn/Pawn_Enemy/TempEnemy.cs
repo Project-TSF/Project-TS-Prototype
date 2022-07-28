@@ -12,9 +12,6 @@ public class TempEnemy
         enemy.maxHealth = 100;
         enemy.sanity = 100;
         enemy.maxSanity = 100;
-        enemy.shield = 0;
-        enemy.modifier_normal_attack = 0;
-        enemy.modifier_defend = 0;
 
         var normalAttackCard = new CardData()
         {

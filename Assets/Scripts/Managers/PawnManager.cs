@@ -13,13 +13,12 @@ public class PawnManager : MonoBehaviour
     [SerializeField] Transform enemyPos;
 
     public Player player;
-    public List<Enemy> enemyList;
+    public List<Enemy> enemyList = new List<Enemy>();
     [SerializeField] Enemy enemyPrefab;
 
     [Space]
 
     [SerializeField] GameObject floatingTextPrefab;
-    [SerializeField] GameObject buffIndicatorPrefab;
 
     public static PawnManager Inst { get; private set; }
     void Awake() => Inst = this;
@@ -27,7 +26,6 @@ public class PawnManager : MonoBehaviour
 
     void Start()
     {
-        enemyList = new List<Enemy>();
 
         // var tempEnemyGen = new TempEnemy();
         // enemyList.Add(tempEnemyGen.GetTempEnemySpade(Instantiate(enemyPrefab, enemyPos)));
@@ -39,21 +37,15 @@ public class PawnManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        player.healthTMP.text = player.health + " / " + player.maxHealth;
-        player.sanityTMP.text = player.sanity + " / " + player.maxSanity;
-        player.shieldTMP.text = player.shield.ToString();
-
-        
+        player.UpdateUI();
 
         for (var i = 0; i < enemyList.Count; ++i)
         {
             Enemy enemy = enemyList[i];
-            enemy.healthTMP.text = enemy.health + " / " + enemy.maxHealth;
-            enemy.sanityTMP.text = enemy.sanity + " / " + enemy.maxSanity;
-            enemy.shieldTMP.text = enemy.shield.ToString();
+            enemy.UpdateUI();
         }
 
-        EnemyAlignment();
+        AlignEnemy();
     }
 
     public void PawnMove(Pawn pawn, PRS prs, float dotweenTime) // 폰 움직이는 함수
@@ -97,7 +89,7 @@ public class PawnManager : MonoBehaviour
         return enemy;
     }
 
-    public void EnemyAlignment() // 폰 정렬하는 함수
+    public void AlignEnemy() // 폰 정렬하는 함수
     {
         var targetPawns = enemyList;
         for (int i = 0; i < targetPawns.Count; i++)

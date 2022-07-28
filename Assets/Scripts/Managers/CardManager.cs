@@ -40,16 +40,6 @@ public class CardManager : MonoBehaviour
         SetupSampleDeck();
         SetupAvailableDeck();
         SetupNGCard();
-
-        // 디버그용으로 카드 생성하는 코드
-        addTohandDeck();
-        addTohandDeck();
-        addTohandDeck();
-        addTohandDeck();
-        addTohandDeck();
-        addTohandDeck();
-
-        CardAlignment();
     }
 
     private void SetupNGCard()
@@ -98,6 +88,21 @@ public class CardManager : MonoBehaviour
         };
     }
 
+    async internal void ClearHandDeck()
+    {
+        int leftoverHandCardCount = handDeck.Count;
+        for (int i = 0; i < leftoverHandCardCount; i++)
+        {
+            handDeck[0].GetComponent<Card>().MoveTransform(new PRS(
+                discardDeckPos.position,
+                Utils.QI,
+                handDeck[0].transform.localScale
+            ), true, 0.25f);
+            await System.Threading.Tasks.Task.Delay(250);
+            DiscardCard(handDeck[0]);
+        }
+    }
+
     public Card MakeCard(CardData cardData) // 카드 Instantiate하는 코드
     {
         var cardObj = Instantiate(cardPrefab, availableDeckPos.position, Utils.QI);
@@ -135,7 +140,7 @@ public class CardManager : MonoBehaviour
         availableDeck = ShuffleDeck(availableDeck);
     }
 
-    void addTohandDeck() // 카드 1개 뽑기
+    void AddToHand() // 카드 1개 뽑기
     {
         if (availableDeck.Count == 0) // 덱에 아무 카드도 없을시 덱 재생성
         {
@@ -153,30 +158,36 @@ public class CardManager : MonoBehaviour
         availableDeck.RemoveAt(0);
 
         // SetOriginOrder();
-        CardAlignment();
+        AlignCard();
     }
 
-    void PickupCards(int pickNum)
+    public void PickupCards(int pickNum)
     {
         // pickupNum개의 카드를 handDeck로 보내는 코드
         for (int i = 0; i < pickNum; i++)
         {
-            addTohandDeck();
+            AddToHand();
         }
+        
+        AlignCard();
     }
 
-    void DiscardCard(Card card)
+    public void DiscardCard(Card card)
     {
+        // TODO: NG카드나 적카드는 따로 만들어서 따로 모션 넣는게 좋을지도?
+        if (card.cardData.isNGCard || card.cardData.isEnemyCard)
+        {
+            Destroy(card.gameObject);
+            return;
+        }
+
         // 카드를 discardDeck로 보내는 코드
         discardDeck.Add(card);
+        card.transform.SetParent(discardDeckPos);
         handDeck.Remove(card);
-
-        card.MoveTransform(new PRS(discardDeckPos.position, Utils.QI, card.originPRS.scale), true, 0.1f);
+        card.slot = null;
 
         card.setVisible(false);
-
-        // SetOriginOrder();
-        CardAlignment();
     }
 
     #endregion
@@ -184,7 +195,7 @@ public class CardManager : MonoBehaviour
 
     #region CardAlignnment
 
-    void CardAlignment()
+    void AlignCard()
     {
         // handdeck의 카드를 정렬시켜주는 코드
         var targetCards = handDeck;
@@ -355,7 +366,7 @@ public class CardManager : MonoBehaviour
                 handDeck.Remove(card);
             }
 
-            CardAlignment(); // TODO: replace/fit 하고 CardAlign하기 카드 제대로 안 돌아 온 상태에서 카드 갈아 끼우면 제대로 안 움직여짐
+            AlignCard(); // TODO: replace/fit 하고 CardAlign하기 카드 제대로 안 돌아 온 상태에서 카드 갈아 끼우면 제대로 안 움직여짐
             // TODO: 이거 처리하는거 큐 쓰면 해결 될지도?
         }
 
@@ -389,7 +400,7 @@ public class CardManager : MonoBehaviour
             {
                 
                 returnHandDeck(card);
-                CardAlignment();
+                AlignCard();
             }
         }
 

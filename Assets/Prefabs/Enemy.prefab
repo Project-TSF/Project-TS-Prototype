@@ -280,6 +280,8 @@ MonoBehaviour:
   healthTMP: {fileID: 5462473909372924576}
   sanityTMP: {fileID: 3712612438465993673}
   shieldTMP: {fileID: 4636173028568737383}
+  buffIndicatorPrefab: {fileID: 6022796185632779736, guid: b090611423fa8db4bb561c6281257d64, type: 3}
+  buffIndicatorList: []
   pattern:
     acts: []
   trigger:

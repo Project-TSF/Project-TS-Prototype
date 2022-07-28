@@ -4,18 +4,24 @@ using UnityEngine;
 
 using DG.Tweening;
 using System.Threading.Tasks;
+using System;
 
 public class BattleManager : MonoBehaviour
 {
     [SerializeField] Transform slotStartPos;
 
-    [Space]
+    [Header("Slot Panel")]
 
     [SerializeField] GameObject slotPanel;
     [SerializeField] Slot slotPrefab;
     [SerializeField] Transform slotGenPos;
     [SerializeField] List<SlotSet> slotsets;
     public int slotAmount;
+
+    [Header("Current Game Status")]
+
+    public int maxActNum;
+    public int currentActNum;
 
 
     public static BattleManager Inst { get; private set; }
@@ -29,16 +35,12 @@ public class BattleManager : MonoBehaviour
     public void StartBattle()
     {
         // 디버그용
-
-        PawnManager.Inst.player.ID = "Player";
-
-        PawnManager.Inst.player.modifier_normal_attack = 0;
-        PawnManager.Inst.player.modifier_defend = 0;
-        
-
         PawnManager.Inst.GetTestEnemy();
 
         // 여기까지 디버그용
+
+        maxActNum = PawnManager.Inst.enemyList[0].pattern.acts.Count - 1;
+        currentActNum = 0;
 
         StartTurn();
         UpdateUI();
@@ -53,19 +55,20 @@ public class BattleManager : MonoBehaviour
 
     public void StartTurn() // 턴 시작
     {
-        MakeSlots(slotAmount);
+        Debug.Log("<<StartTurn>>");
+        MakeSlotsetAsAmount(slotAmount);
+
+        if (currentActNum > maxActNum) // 모든 Act가 지나면 다시 0부터 시작
+        {
+            currentActNum = 0;
+        }
+
         for (int i = 0; i < slotsets.Count; i++)
         {
-            CardData card = slotsets[i].enemySlot.slotedCard.cardData;
-            CardData carddata = PawnManager.Inst.enemyList[0].pattern.acts[0].cardDatas[i];
-
-            // copying carddata to card
-            card.cardName = carddata.cardName;
-            card.speed = carddata.speed;
-            card.cardEffect = carddata.cardEffect;
-
-            slotsets[i].enemySlot.slotedCard.UpdateUI();
+            GetEnemyCard(i);
         }
+
+        CardManager.Inst.PickupCards(6);
     }
 
     public async void EndTurn() // Turn End 버튼이 눌렸을 때
@@ -87,8 +90,13 @@ public class BattleManager : MonoBehaviour
             timedSlotList.AddRange(tempSlotSet);
         }
 
-        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().TogglePanel();
+        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().ClosePanel();
+        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = false;
+
+        await Task.Delay(1000);
         
+        //TODO: Delay 말고 다른 방법 찾아보기. 콜백이라던가...?
+
         foreach (Slot slot in timedSlotList)
         {
             if (!Application.isPlaying) break;
@@ -97,6 +105,19 @@ public class BattleManager : MonoBehaviour
             slot.slotedCard.UseEffect();
             await Task.Delay(1500);
         }
+
+        Debug.Log("<<END TURN>>");
+        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = true;
+        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().OpenPanel();
+
+        await Task.Delay(1000);
+
+        CardManager.Inst.ClearHandDeck();
+
+        await Task.Delay(250 * 6);
+
+        currentActNum += 1;
+        StartTurn();
     }
 
     #endregion
@@ -110,7 +131,7 @@ public class BattleManager : MonoBehaviour
         obj.DOScale(prs.scale, dotweenTime);
     }
 
-    void SlotSetsAlignment() // 슬롯 정렬하는 함수
+    void AlignSlotSets() // 슬롯 정렬하는 함수
     {
         var targetSlots = slotsets;
         for (int i = 0; i < targetSlots.Count; i++)
@@ -154,38 +175,71 @@ public class BattleManager : MonoBehaviour
         slotMy.transform.localPosition = new Vector3(0, 0, 0);
         slotEnemy.transform.localPosition = new Vector3(0, 8, 0);
 
-        // 적 카드 받아오기인데 나중에 위에 디버그쪽에 짜둔거 GetEnemyCard로 옮기기
-        slotEnemy.slotedCard = GetEnemyCard(slotEnemy);
-
-        // 카드 내부 데이터 초기화
-        slotEnemy.slotedCard.slot = slotEnemy.gameObject;
-        
-        // 적 카드를 적 슬롯 위에 놓기
-        slotEnemy.slotedCard.transform.parent = slotEnemy.transform;
-        slotEnemy.slotedCard.transform.localPosition = new Vector3(0, 0, 0);
-        slotEnemy.slotedCard.originPRS = new PRS(
-            slotEnemy.slotedCard.transform.position,
-            Utils.QI,
-            slotEnemy.slotedCard.transform.localScale);
-        slotEnemy.slotedCard.setVisible(true);
 
         return new SlotSet() { mySlot = slotMy, enemySlot = slotEnemy };
     }
 
-    Card GetEnemyCard(Slot slotEnemy) // 적 카드를 Enemy에서 불러와 return하는 함수
+    void GetEnemyCard(int enemyCardIndex) // 적 카드를 Enemy에서 불러와 return하는 함수
     {
-        Card tempCard = CardManager.Inst.MakeCard(new CardData()); // TODO: 적 카드 받는 함수 구현
+        Slot slot = slotsets[enemyCardIndex].enemySlot;
+        Card card = CardManager.Inst.MakeCard(new CardData()); // TODO: 적 카드 받는 함수 구현
 
-        return tempCard;
+        // 적 카드 받아오기인데 나중에 위에 디버그쪽에 짜둔거 GetEnemyCard로 옮기기
+        slot.slotedCard = card;
+
+        // 카드 내부 데이터 초기화
+        slot.slotedCard.slot = slot.gameObject;
+        
+        // 적 카드를 적 슬롯 위에 놓기
+        slot.slotedCard.transform.parent = slot.transform;
+        slot.slotedCard.transform.localPosition = new Vector3(0, 0, 0);
+        slot.slotedCard.originPRS = new PRS(
+            slot.slotedCard.transform.position,
+            Utils.QI,
+            slot.slotedCard.transform.localScale);
+        slot.slotedCard.setVisible(true);
+
+        //TODO: 턴 종료 - 턴 시작 마다 enemyCard를 매번 새로 만들어야하는데 재활용 하면 성능 향상을 기대해 볼 수 있지 않을까?
+        CardData copyCardData = card.cardData;
+        CardData originalCardData = PawnManager.Inst.enemyList[0].pattern.acts[currentActNum].cardDatas[enemyCardIndex];
+
+        // copying carddata to card
+        card.name = originalCardData.cardName;
+        copyCardData.cardName = originalCardData.cardName;
+        copyCardData.isEnemyCard = true;
+        copyCardData.speed = originalCardData.speed;
+        copyCardData.cardEffect = originalCardData.cardEffect;
+
+        card.UpdateUI();
     }
 
-    void MakeSlots(int amount) // slotset 여러개를 스폰하는 함수
+    void MakeSlotsetAsAmount(int amount) // slotset 여러개를 스폰하는 함수
     {
-        for (int i = 0; i < amount; i++)
+        int currentSlotCount = slotsets.Count;
+        if (currentSlotCount > amount)
         {
-            SlotSet slotSet = MakeSlotSets();
-            slotsets.Add(slotSet);
-            SlotSetsAlignment();
+            for (int i = 0; i < currentSlotCount - amount; i++)
+            {
+                Destroy(slotsets[i].mySlot);
+                Destroy(slotsets[i].enemySlot);
+            }
+            slotsets.RemoveRange(0, currentSlotCount - amount);
+            AlignSlotSets();
+        }
+        else if (currentSlotCount < amount)
+        {
+            for (int i = 0; i < amount - currentSlotCount; i++)
+            {
+                slotsets.Add(MakeSlotSets());
+            }
+            AlignSlotSets();
+        }
+
+        // Cleanse the data of slots in slotsets
+        for (int i = 0; i < slotsets.Count; i++)
+        {
+            slotsets[i].mySlot.slotedCard = null;
+            slotsets[i].enemySlot.slotedCard = null;
         }
     }
 

@@ -7,6 +7,7 @@ using UnityEngine;
 public class CardData
 {
     [System.NonSerialized] public bool isNGCard;
+    [System.NonSerialized] public bool isEnemyCard;
     public string cardName;
     public int speed;
 

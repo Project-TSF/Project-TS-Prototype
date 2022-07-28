@@ -4,10 +4,10 @@ using UnityEngine;
 
 using TMPro;
 
-public class buffIndicator : MonoBehaviour
+public class BuffIndicator : MonoBehaviour
 {
     [SerializeField] TMP_Text buffStringTMP;
-    public string buffText;
+    public string buffText = "0";
 
     public void UpdateUI()
     {

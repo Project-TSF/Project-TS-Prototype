@@ -9,29 +9,40 @@ public class BtnTogglePanel : MonoBehaviour
 {
     [SerializeField] TMP_Text toggleBtnText;
     [SerializeField] GameObject slotPanel;
-    bool isOpenPanel;
-
-    private void Awake() {
-        isOpenPanel = true;
-    }
+    bool isOpenPanel = true;
+    public bool isAvailable = true;
 
     public void TogglePanel()
     {
-        if (isOpenPanel)
+        if (isAvailable)
         {
-            Debug.Log("<<Close Slot Panel>>");
-            slotPanel.transform.DOMoveY(-30, 0.2f);
-
-            isOpenPanel = false;
-            toggleBtnText.text = "Open Panel";
+            if (isOpenPanel)
+            {
+                ClosePanel();
+            }
+            else
+            {
+                OpenPanel();
+            }
         }
-        else
-        {
-            Debug.Log("<<Open Slot Panel>>");
-            slotPanel.transform.DOMoveY(0, 0.2f);
+    }
 
-            isOpenPanel = true;
-            toggleBtnText.text = "Close Panel";
-        }
+    public void OpenPanel()
+    {
+        Debug.Log("<<Open Slot Panel>>");
+        slotPanel.transform.DOMoveY(0, 0.2f);
+
+        isOpenPanel = true;
+        toggleBtnText.text = "Close Panel";
+    }
+
+    public void ClosePanel()
+    {
+        Debug.Log("<<Close Slot Panel>>");
+        slotPanel.transform.DOMoveY(-30, 0.2f);
+
+        isOpenPanel = false;
+        toggleBtnText.text = "Open Panel";
+        
     }
 }
