@@ -1,34 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using DG.Tweening;
 
 public class CardManager : MonoBehaviour
 {
-    [SerializeField] int handDeckCountLimit; // handdeck에 저장할 카드의 최대 개수
+    [Header("Decks")]
+    [SerializeField] List<Card> allCardDeck;
+    [SerializeField] List<Card> availableDeck;
+    [SerializeField] List<Card> handDeck;
+    [SerializeField] List<Card> discardDeck;
+    
+    
+    [Header("Card")]
+    public bool isCardSelectable;
+    [SerializeField] GameObject targetSlotable; // 카드를 드래그 하다 마우스를 놓았을 때 그 밑에 있던 오브젝트중 Slotable한 오브젝트
 
-    [Space]
 
-    [SerializeField] GameObject cardPrefab; // 카드 프리펩
-
-    [Space]
-
+    [Header("Position")]
     [SerializeField] Transform availableDeckPos;
     [SerializeField] Transform handDeckPos;
     [SerializeField] Transform discardDeckPos;
     [SerializeField] GameObject NGCardSlot;
     [SerializeField] GameObject handDeckCollider;
+    
 
-    [Space]
+    [Header("Prefabs")]
+    [SerializeField] GameObject cardPrefab; // 카드 프리펩
 
-    [SerializeField] List<Card> allCardDeck;
-    [SerializeField] List<Card> availableDeck;
-    [SerializeField] List<Card> handDeck;
-    [SerializeField] List<Card> discardDeck;
-
-    [Space]
-
-    [SerializeField] GameObject targetSlotable; // 카드를 드래그 하다 마우스를 놓았을 때 그 밑에 있던 오브젝트중 Slotable한 오브젝트
 
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
@@ -40,25 +41,17 @@ public class CardManager : MonoBehaviour
         SetupSampleDeck();
         SetupAvailableDeck();
         SetupNGCard();
-
-        // 디버그용으로 카드 생성하는 코드
-        addTohandDeck();
-        addTohandDeck();
-        addTohandDeck();
-        addTohandDeck();
-        addTohandDeck();
-        addTohandDeck();
-
-        CardAlignment();
     }
 
     private void SetupNGCard()
     {
         // NG카드를 오른쪽 밑에 생성하는 코드
-        Card NGCard = MakeCard(new CardData() { isNGCard = true });
-        NGCard.name = ("NGCard " + NGCard.cardData.cardName + UnityEngine.Random.Range(0, 1000).ToString());
+        Card NGCard = MakeCard(new CardData() { isNGCard = true, cardName = "NG", speed = 0, cardEffect = new List<System.Action>() { () => { Debug.Log("NG"); } } });
+        NGCard.name = "NGCard";
         NGCard.transform.parent = NGCardSlot.transform;
         NGCard.transform.position = NGCardSlot.transform.position;
+
+        NGCard.UpdateUI();
 
         NGCard.slot = NGCardSlot;
         NGCard.originPRS = new PRS(NGCard.transform.position, Utils.QI, NGCard.transform.localScale);
@@ -71,7 +64,7 @@ public class CardManager : MonoBehaviour
     void SetupAvailableDeck()
     {
         // 현재 가지고 있는 카드들을 불러와 이번 전투에서 사용할 카드덱에 채워넣음
-        availableDeck = allCardDeck;
+        availableDeck = ShuffleDeck(allCardDeck);
         foreach (Card card in availableDeck)
         {
             card.transform.parent = availableDeckPos;
@@ -83,17 +76,27 @@ public class CardManager : MonoBehaviour
         TempCard tempcard = new TempCard();
         // 디버그용 샘플덱 생성 코드
         allCardDeck = new List<Card>() {
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
-            MakeCard(tempcard.GetTempCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempAttackCard()),
+            MakeCard(tempcard.GetTempGetShieldCard()),
+            MakeCard(tempcard.GetTempGetShieldCard()),
+            MakeCard(tempcard.GetTempGetShieldCard()),
+            MakeCard(tempcard.GetTempGetShieldCard()),
+            MakeCard(tempcard.GetTempPowerCard()),
         };
+    }
+
+    async internal Task ClearHandDeck()
+    {
+        int leftoverHandCardCount = handDeck.Count;
+        for (int i = 0; i < leftoverHandCardCount; i++)
+        {
+            await handDeck[0].transform.DOMove(discardDeckPos.position, 0.25f).AsyncWaitForCompletion();
+            DiscardCard(handDeck[0]);
+        }
     }
 
     public Card MakeCard(CardData cardData) // 카드 Instantiate하는 코드
@@ -130,10 +133,10 @@ public class CardManager : MonoBehaviour
             card.MoveTransform(new PRS(availableDeckPos.position, Utils.QI, card.originPRS.scale), false);
         }
 
-        ShuffleDeck(availableDeck);
+        availableDeck = ShuffleDeck(availableDeck);
     }
 
-    void addTohandDeck() // 카드 1개 뽑기
+    void AddToHand() // 카드 1개 뽑기
     {
         if (availableDeck.Count == 0) // 덱에 아무 카드도 없을시 덱 재생성
         {
@@ -151,30 +154,36 @@ public class CardManager : MonoBehaviour
         availableDeck.RemoveAt(0);
 
         // SetOriginOrder();
-        CardAlignment();
+        AlignCard();
     }
 
-    void PickupCards(int pickNum)
+    public void PickupCards(int pickNum)
     {
         // pickupNum개의 카드를 handDeck로 보내는 코드
         for (int i = 0; i < pickNum; i++)
         {
-            addTohandDeck();
+            AddToHand();
         }
+        
+        AlignCard();
     }
 
-    void DiscardCard(Card card)
+    public void DiscardCard(Card card)
     {
+        // TODO: NG카드나 적카드는 따로 만들어서 따로 모션 넣는게 좋을지도?
+        if (card.cardData.isNGCard || card.cardData.isEnemyCard)
+        {
+            Destroy(card.gameObject);
+            return;
+        }
+
         // 카드를 discardDeck로 보내는 코드
         discardDeck.Add(card);
+        card.transform.SetParent(discardDeckPos);
         handDeck.Remove(card);
-
-        card.MoveTransform(new PRS(discardDeckPos.position, Utils.QI, card.originPRS.scale), true, 0.1f);
+        card.slot = null;
 
         card.setVisible(false);
-
-        // SetOriginOrder();
-        CardAlignment();
     }
 
     #endregion
@@ -182,7 +191,7 @@ public class CardManager : MonoBehaviour
 
     #region CardAlignnment
 
-    void CardAlignment()
+    void AlignCard()
     {
         // handdeck의 카드를 정렬시켜주는 코드
         var targetCards = handDeck;
@@ -210,7 +219,8 @@ public class CardManager : MonoBehaviour
         Debug.Log(slot.name);
         Debug.Log("FIT || Card: " + card.name + " | " + "Slot: " + slot.name);
 
-        var newPRS = new PRS(slot.transform.position, card.transform.rotation, card.transform.localScale);
+        var newPos = new Vector3(slot.transform.position.x, slot.transform.position.y, slot.transform.position.z - 5);
+        var newPRS = new PRS(newPos, card.transform.rotation, card.transform.localScale);
         card.originPRS = newPRS;
         card.MoveTransform(newPRS, true, 0.1f);
         card.transform.parent = slot.transform;
@@ -271,26 +281,14 @@ public class CardManager : MonoBehaviour
 
     #region CardMouse
 
-    internal void CardMouseOver(Card card)
-    {
-
-    }
-
-    internal void CardMouseExit(Card card)
-    {
-
-    }
-
-    internal void CardMouseDown(Card card)
-    {
-        // card.originPRS = new PRS(card.transform.position, card.transform.rotation, card.transform.localScale);
-    }
-
     internal void CardMouseUp(Card card)
     {
-        // TODO: 이거 가끔 카드가 안잡힐 때가 있는거 같은데 애초에 카드를 클릭했다고 인식도 안됨. 아마 TargetSlotable 변수의 업데이트 문제같아오
+        // TODO: 이거 가끔 카드가 안잡힐 때가 있는거 같은데 OnMouse 함수 자체가 작동을 안하네요
         // 카드를 움직였을때 어떤 위치로 보내는가 판별하는 코드 TODO: 이거 다른 곳으로 정리해서 옮기기
         Debug.Log("==================MOUSE UP===================");
+
+        if (!isCardSelectable) return; // 카드를 선택할 수 없는 상태이면 아무것도 하지 않는다.
+
         GetTargetEntity(); // 카드를 놓았을 때 마우스가 어느 오브젝트 위에서 놓아졌는지 리턴하는 코드
         Debug.Log(card.slot?.name + " -> " + targetSlotable?.name);
 
@@ -353,7 +351,7 @@ public class CardManager : MonoBehaviour
                 handDeck.Remove(card);
             }
 
-            CardAlignment(); // TODO: replace/fit 하고 CardAlign하기 카드 제대로 안 돌아 온 상태에서 카드 갈아 끼우면 제대로 안 움직여짐
+            AlignCard(); // TODO: replace/fit 하고 CardAlign하기 카드 제대로 안 돌아 온 상태에서 카드 갈아 끼우면 제대로 안 움직여짐
             // TODO: 이거 처리하는거 큐 쓰면 해결 될지도?
         }
 
@@ -387,7 +385,7 @@ public class CardManager : MonoBehaviour
             {
                 
                 returnHandDeck(card);
-                CardAlignment();
+                AlignCard();
             }
         }
 
@@ -419,6 +417,8 @@ public class CardManager : MonoBehaviour
 
     internal void CardMouseDrag(Card card) // 카드 드래그
     {
+        if (!isCardSelectable) return;  // 카드 선택 불가능 상태이면 드래그 하지 않음
+
         if (card.slot.GetComponent<Slot>())
         {
             if (!card.slot.GetComponent<Slot>().isMoveable) return; // 카드의 슬롯이 있고, Moveable하지 않으면 드래그 하지 않음

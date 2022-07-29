@@ -7,13 +7,17 @@ using UnityEngine;
 public class CardData
 {
     [System.NonSerialized] public bool isNGCard;
+    [System.NonSerialized] public bool isEnemyCard;
     public string cardName;
     public int speed;
 
-    public List<string> cardEffect;
+    public List<System.Action> cardEffect;
 
     public void UseEffect()
     {
-        
+        foreach (System.Action action in cardEffect)
+        {
+            action.Invoke();
+        }
     }
 }

@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using DG.Tweening;
+using System.Threading.Tasks;
+using System;
 
 public class BattleManager : MonoBehaviour
 {
     [SerializeField] Transform slotStartPos;
 
-    [Space]
+    [Header("Slot Panel")]
 
     [SerializeField] GameObject slotPanel;
     [SerializeField] Slot slotPrefab;
     [SerializeField] Transform slotGenPos;
     [SerializeField] List<SlotSet> slotsets;
     public int slotAmount;
+
+    [Header("Current Game Status")]
+
+    public int maxActNum;
+    public int currentActNum;
 
 
     public static BattleManager Inst { get; private set; }
@@ -28,19 +35,12 @@ public class BattleManager : MonoBehaviour
     public void StartBattle()
     {
         // 디버그용
-
-        PawnManager.Inst.player.ID = "Player";
-
-        PawnManager.Inst.player.modifier_normal_attack = 0;
-        PawnManager.Inst.player.modifier_defend = 0;
-        
-
         PawnManager.Inst.GetTestEnemy();
 
-        PawnBehaviorList pawnBehaviorList = new PawnBehaviorList();
-        pawnBehaviorList.PawnBehaviorTranslator("Behavior_Action_NormalAttack(SPawn_Player, Function_RandomInt(4, 5))");
-
         // 여기까지 디버그용
+
+        maxActNum = PawnManager.Inst.enemyList[0].pattern.acts.Count - 1;
+        currentActNum = 0;
 
         StartTurn();
         UpdateUI();
@@ -48,71 +48,70 @@ public class BattleManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        // PawnManager.Inst.UpdateUI();
+        PawnManager.Inst.UpdateUI();
     }
 
     #region Turn
 
     public void StartTurn() // 턴 시작
     {
-        MakeSlots(slotAmount);
+        Debug.Log("<<StartTurn>>");
+        MakeSlotsetAsAmount(slotAmount);
+
+        if (currentActNum > maxActNum) // 모든 Act가 지나면 다시 0부터 시작
+        {
+            currentActNum = 0;
+        }
+
         for (int i = 0; i < slotsets.Count; i++)
         {
-            Debug.Log(i);
-            CardData card = slotsets[i].enemySlot.slotedCard.cardData;
-            CardData carddata = PawnManager.Inst.enemyList[0].pattern.acts[0].cardDatas[i];
-
-            // card = carddata;
+            GetEnemyCard(i);
         }
+
+        CardManager.Inst.PickupCards(6);
+
+        CardManager.Inst.isCardSelectable = true;
     }
 
-    public void EndTurn() // Turn End 버튼이 눌렸을 때
+    public async void EndTurn() // Turn End 버튼이 눌렸을 때
     {
         Debug.Log("<<END TURN>>");
 
-        List<Slot> timedSlotList = new List<Slot>();
-        foreach (SlotSet slotSet in slotsets)
+        Queue<Slot> timedQueue = GetTimedQueue();
+        if (timedQueue == null)
         {
-            List<Slot> tempSlotSet = GetTimedSlots(slotSet);
+            Debug.Log("Slots are not full");
 
-            if (tempSlotSet == null)
-            {
-                Debug.Log("Slots are not full");
-
-                return;
-            }
-
-            timedSlotList.AddRange(tempSlotSet);
+            return;
         }
 
-        foreach (Slot s in timedSlotList)
+        await GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().ClosePanel();
+        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = false;
+        CardManager.Inst.isCardSelectable = false;
+        
+        //TODO: Delay 말고 다른 방법 찾아보기. 콜백이라던가...?
+
+        foreach (Slot slot in timedQueue)
         {
-            s.slotedCard.UseEffect();
+            if (!Application.isPlaying) break;
+
+            Debug.Log($"Use {slot.slotedCard.cardData.cardName}");
+            await slot.slotedCard.UseEffect();
         }
 
-        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().TogglePanel();
+        Debug.Log("<<END TURN>>");
+        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = true;
+        await GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().OpenPanel();
+
+        await CardManager.Inst.ClearHandDeck();
+
+        currentActNum += 1;
+        StartTurn();
     }
 
-    List<Slot> GetTimedSlots(SlotSet slotset) //slotset에서 slot에 있는 카드가 빠른 순으로 정렬해서 리턴
+    void UseCardEffectFromQueue()
     {
-        if (slotset.mySlot.slotedCard == null || slotset.enemySlot.slotedCard == null)
-        {
-            return null;
-        }
 
-
-        if (slotset.mySlot.slotedCard.cardData.speed < slotset.enemySlot.slotedCard.cardData.speed)
-        {
-            return new List<Slot>() { slotset.mySlot, slotset.enemySlot };
-        }
-        else if (slotset.mySlot.slotedCard.cardData.speed > slotset.enemySlot.slotedCard.cardData.speed)
-        {
-            return new List<Slot>() { slotset.enemySlot, slotset.mySlot };
-        }
-        else
-        {
-            return new List<Slot>() { slotset.mySlot, slotset.enemySlot }; // TODO: 방어/공격 서순 정하기
-        }
     }
 
     #endregion
@@ -126,7 +125,7 @@ public class BattleManager : MonoBehaviour
         obj.DOScale(prs.scale, dotweenTime);
     }
 
-    void SlotSetsAlignment() // 슬롯 정렬하는 함수
+    void AlignSlotSets() // 슬롯 정렬하는 함수
     {
         var targetSlots = slotsets;
         for (int i = 0; i < targetSlots.Count; i++)
@@ -151,51 +150,122 @@ public class BattleManager : MonoBehaviour
     {
         GameObject SlotSetObj = new GameObject("SlotSet " + UnityEngine.Random.Range(0, 1000).ToString());
 
+        // 슬롯을 적꺼 하나 내꺼 하나 만듬
         Slot slotMy = MakeSlot();
         Slot slotEnemy = MakeSlot();
 
+        // 적의 카드는 움직일 수 없게, 내 카드는 움직일 수 있게 하기
         slotMy.isMoveable = true;
         slotEnemy.isMoveable = false;
 
+        // Slotset의 위치를 옮기고 hierarchy 정리를 위해서 parent를 지정해주기
         SlotSetObj.transform.parent = slotStartPos.transform;
 
+        // Slot들을 SlotSet 안에 넣어주기
         slotMy.transform.parent = SlotSetObj.transform;
         slotEnemy.transform.parent = SlotSetObj.transform;
 
+        // SlotSet 안에서 Slot들의 위치 조절
         slotMy.transform.localPosition = new Vector3(0, 0, 0);
         slotEnemy.transform.localPosition = new Vector3(0, 8, 0);
 
 
-        slotEnemy.slotedCard = GetEnemyCard(slotEnemy);
-
-        slotEnemy.slotedCard.slot = slotEnemy.gameObject;
-        slotEnemy.slotedCard.transform.parent = slotEnemy.transform;
-
-        slotEnemy.slotedCard.transform.localPosition = new Vector3(0, 0, 0);
-        slotEnemy.slotedCard.originPRS = new PRS(
-            slotEnemy.slotedCard.transform.position,
-            Utils.QI,
-            slotEnemy.slotedCard.transform.localScale);
-        slotEnemy.slotedCard.setVisible(true);
-
         return new SlotSet() { mySlot = slotMy, enemySlot = slotEnemy };
     }
 
-    Card GetEnemyCard(Slot slotEnemy) // 적 카드를 Enemy에서 불러와 return하는 함수
+    void GetEnemyCard(int enemyCardIndex) // 적 카드를 Enemy에서 불러와 return하는 함수
     {
-        Card tempCard = CardManager.Inst.MakeCard(new CardData()); // TODO: 적 카드 받는 함수 구현
+        Slot slot = slotsets[enemyCardIndex].enemySlot;
+        Card card = CardManager.Inst.MakeCard(new CardData()); // TODO: 적 카드 받는 함수 구현
 
-        return tempCard;
+        // 적 카드 받아오기인데 나중에 위에 디버그쪽에 짜둔거 GetEnemyCard로 옮기기
+        slot.slotedCard = card;
+
+        // 카드 내부 데이터 초기화
+        slot.slotedCard.slot = slot.gameObject;
+        
+        // 적 카드를 적 슬롯 위에 놓기
+        slot.slotedCard.transform.parent = slot.transform;
+        slot.slotedCard.transform.localPosition = new Vector3(0, 0, 0);
+        slot.slotedCard.originPRS = new PRS(
+            slot.slotedCard.transform.position,
+            Utils.QI,
+            slot.slotedCard.transform.localScale);
+        slot.slotedCard.setVisible(true);
+
+        //TODO: 턴 종료 - 턴 시작 마다 enemyCard를 매번 새로 만들어야하는데 재활용 하면 성능 향상을 기대해 볼 수 있지 않을까?
+        CardData copyCardData = card.cardData;
+        CardData originalCardData = PawnManager.Inst.enemyList[0].pattern.acts[currentActNum].cardDatas[enemyCardIndex];
+
+        // copying carddata to card
+        card.name = originalCardData.cardName;
+        copyCardData.cardName = originalCardData.cardName;
+        copyCardData.isEnemyCard = true;
+        copyCardData.speed = originalCardData.speed;
+        copyCardData.cardEffect = originalCardData.cardEffect;
+
+        card.UpdateUI();
     }
 
-    void MakeSlots(int amount) // slotset 여러개를 스폰하는 함수
+    void MakeSlotsetAsAmount(int amount) // slotset 여러개를 스폰하는 함수
     {
-        for (int i = 0; i < amount; i++)
+        int currentSlotCount = slotsets.Count;
+        if (currentSlotCount > amount)
         {
-            SlotSet slotSet = MakeSlotSets();
-            slotsets.Add(slotSet);
-            SlotSetsAlignment();
+            for (int i = 0; i < currentSlotCount - amount; i++)
+            {
+                Destroy(slotsets[i].mySlot);
+                Destroy(slotsets[i].enemySlot);
+            }
+            slotsets.RemoveRange(0, currentSlotCount - amount);
+            AlignSlotSets();
         }
+        else if (currentSlotCount < amount)
+        {
+            for (int i = 0; i < amount - currentSlotCount; i++)
+            {
+                slotsets.Add(MakeSlotSets());
+            }
+            AlignSlotSets();
+        }
+
+        // Cleanse the data of slots in slotsets
+        for (int i = 0; i < slotsets.Count; i++)
+        {
+            slotsets[i].mySlot.slotedCard = null;
+            slotsets[i].enemySlot.slotedCard = null;
+        }
+    }
+
+    Queue<Slot> GetTimedQueue() //slotset에서 slot에 있는 카드가 빠른 순으로 정렬해서 리턴
+    {
+        Queue<Slot> timedQueue = new Queue<Slot>();
+
+        foreach (SlotSet slotset in slotsets)
+        {
+            if (slotset.mySlot.slotedCard == null)
+            {
+                return null;
+            }
+
+            if (slotset.mySlot.slotedCard.cardData.speed < slotset.enemySlot.slotedCard.cardData.speed)
+            {
+                timedQueue.Enqueue(slotset.mySlot);
+                timedQueue.Enqueue(slotset.enemySlot);
+            }
+            else if (slotset.mySlot.slotedCard.cardData.speed > slotset.enemySlot.slotedCard.cardData.speed)
+            {
+                timedQueue.Enqueue(slotset.enemySlot);
+                timedQueue.Enqueue(slotset.mySlot);
+            }
+            else
+            {
+                timedQueue.Enqueue(slotset.mySlot);
+                timedQueue.Enqueue(slotset.enemySlot);
+            }
+        }
+
+        return timedQueue;
     }
 
     #endregion
