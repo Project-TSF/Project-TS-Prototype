@@ -219,7 +219,8 @@ public class CardManager : MonoBehaviour
         Debug.Log(slot.name);
         Debug.Log("FIT || Card: " + card.name + " | " + "Slot: " + slot.name);
 
-        var newPRS = new PRS(slot.transform.position, card.transform.rotation, card.transform.localScale);
+        var newPos = new Vector3(slot.transform.position.x, slot.transform.position.y, slot.transform.position.z - 5);
+        var newPRS = new PRS(newPos, card.transform.rotation, card.transform.localScale);
         card.originPRS = newPRS;
         card.MoveTransform(newPRS, true, 0.1f);
         card.transform.parent = slot.transform;
@@ -280,24 +281,9 @@ public class CardManager : MonoBehaviour
 
     #region CardMouse
 
-    internal void CardMouseOver(Card card)
-    {
-
-    }
-
-    internal void CardMouseExit(Card card)
-    {
-
-    }
-
-    internal void CardMouseDown(Card card)
-    {
-
-    }
-
     internal void CardMouseUp(Card card)
     {
-        // TODO: 이거 가끔 카드가 안잡힐 때가 있는거 같은데 애초에 카드를 클릭했다고 인식도 안됨. 아마 TargetSlotable 변수의 업데이트 문제같아오
+        // TODO: 이거 가끔 카드가 안잡힐 때가 있는거 같은데 OnMouse 함수 자체가 작동을 안하네요
         // 카드를 움직였을때 어떤 위치로 보내는가 판별하는 코드 TODO: 이거 다른 곳으로 정리해서 옮기기
         Debug.Log("==================MOUSE UP===================");
 

@@ -57,19 +57,10 @@ public class Card : MonoBehaviour
     }
 
     #region CardMouseControl
-    private void OnMouseOver()
-    {
-        CardManager.Inst.CardMouseOver(this);
-    }
-
-    private void OnMouseExit()
-    {
-        CardManager.Inst.CardMouseExit(this);
-    }
 
     private void OnMouseDown()
     {
-        CardManager.Inst.CardMouseDown(this);
+        Debug.Log("OnMouseDown");
     }
 
     private void OnMouseUp()
