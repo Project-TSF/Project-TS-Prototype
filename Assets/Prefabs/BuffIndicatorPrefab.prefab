@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 6022796185632779737}
   - component: {fileID: 6022796185632779739}
   m_Layer: 0
-  m_Name: BuffIndicator
+  m_Name: BuffIndicatorPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

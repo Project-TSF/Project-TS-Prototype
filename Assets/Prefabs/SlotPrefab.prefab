@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 50971282251111368}
   - component: {fileID: 50971282251111369}
   m_Layer: 7
-  m_Name: Slot
+  m_Name: SlotPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
