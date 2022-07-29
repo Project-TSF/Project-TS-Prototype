@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Enemy : Pawn
+public class AbstractPawnEnemy : Pawn
 {
     [Header("Enemy Attributes")]
 

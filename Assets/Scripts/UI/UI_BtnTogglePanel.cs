@@ -6,7 +6,7 @@ using TMPro;
 using DG.Tweening;
 using System.Threading.Tasks;
 
-public class BtnTogglePanel : MonoBehaviour
+public class UI_BtnTogglePanel : MonoBehaviour
 {
     [SerializeField] TMP_Text toggleBtnText;
     [SerializeField] GameObject slotPanel;

@@ -85,8 +85,8 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        await GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().ClosePanel();
-        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = false;
+        await GameObject.Find("BtnTogglePanel").GetComponent<UI_BtnTogglePanel>().ClosePanel();
+        GameObject.Find("BtnTogglePanel").GetComponent<UI_BtnTogglePanel>().isAvailable = false;
         CardManager.Inst.isCardSelectable = false;
         
         //TODO: Delay 말고 다른 방법 찾아보기. 콜백이라던가...?
@@ -100,8 +100,8 @@ public class BattleManager : MonoBehaviour
         }
 
         Debug.Log("<<END TURN>>");
-        GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().isAvailable = true;
-        await GameObject.Find("BtnTogglePanel").GetComponent<BtnTogglePanel>().OpenPanel();
+        GameObject.Find("BtnTogglePanel").GetComponent<UI_BtnTogglePanel>().isAvailable = true;
+        await GameObject.Find("BtnTogglePanel").GetComponent<UI_BtnTogglePanel>().OpenPanel();
 
         await CardManager.Inst.ClearHandDeck();
 
@@ -176,7 +176,7 @@ public class BattleManager : MonoBehaviour
     void GetEnemyCard(int enemyCardIndex) // 적 카드를 Enemy에서 불러와 return하는 함수
     {
         Slot slot = slotsets[enemyCardIndex].enemySlot;
-        Card card = CardManager.Inst.MakeCard(new CardData()); // TODO: 적 카드 받는 함수 구현
+        AbstractCard card = CardManager.Inst.MakeCard(new CardData()); // TODO: 적 카드 받는 함수 구현
 
         // 적 카드 받아오기인데 나중에 위에 디버그쪽에 짜둔거 GetEnemyCard로 옮기기
         slot.slotedCard = card;

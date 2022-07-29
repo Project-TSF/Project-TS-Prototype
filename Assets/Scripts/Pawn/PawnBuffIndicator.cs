@@ -4,7 +4,7 @@ using UnityEngine;
 
 using TMPro;
 
-public class BuffIndicator : MonoBehaviour
+public class PawnBuffIndicator : MonoBehaviour
 {
     [SerializeField] TMP_Text buffStringTMP;
     public string buffText = "0";

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TempEnemy
 {
-    public Enemy GetTempEnemySpade(Enemy enemy)
+    public AbstractPawnEnemy GetTempEnemySpade(AbstractPawnEnemy enemy)
     {
         // ID = "Spade"; 
         enemy.pawnName = "Spade";

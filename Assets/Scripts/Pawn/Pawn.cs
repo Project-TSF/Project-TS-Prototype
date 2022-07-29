@@ -41,7 +41,7 @@ public class Pawn : MonoBehaviour
     public TMP_Text shieldTMP;
 
     [SerializeField] GameObject buffIndicatorPrefab;
-    [SerializeField] List<BuffIndicator> buffIndicatorList = new List<BuffIndicator>();
+    [SerializeField] List<PawnBuffIndicator> buffIndicatorList = new List<PawnBuffIndicator>();
 
 
     public void UpdateUI()
@@ -82,11 +82,11 @@ public class Pawn : MonoBehaviour
         }
     }
 
-    #region BuffIndicator
+    #region PawnBuffIndicator
 
     public void AddBuffIndicator(string name, string value, Color color)
     { //TODO: 모션 넣기
-        BuffIndicator buffIndicator = Instantiate(buffIndicatorPrefab).GetComponent<BuffIndicator>();
+        PawnBuffIndicator buffIndicator = Instantiate(buffIndicatorPrefab).GetComponent<PawnBuffIndicator>();
         buffIndicator.transform.SetParent(transform);
         buffIndicator.name = name;
         buffIndicator.buffText = value;
@@ -98,7 +98,7 @@ public class Pawn : MonoBehaviour
 
     public void RemoveBuffIndicator(string name)
     {
-        foreach (BuffIndicator buffIndicator in buffIndicatorList)
+        foreach (PawnBuffIndicator buffIndicator in buffIndicatorList)
         {
             if (buffIndicator.name == name)
             {
@@ -112,7 +112,7 @@ public class Pawn : MonoBehaviour
     public void AlignBuffIndicator()
     {
         var i = 0;
-        foreach (BuffIndicator buffIndicator in buffIndicatorList)
+        foreach (PawnBuffIndicator buffIndicator in buffIndicatorList)
         {
             buffIndicator.transform.localPosition = new Vector3(6, 4.5f - i*1.5f, 0);
         }

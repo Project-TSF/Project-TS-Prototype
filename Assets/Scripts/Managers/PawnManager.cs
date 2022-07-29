@@ -12,9 +12,9 @@ public class PawnManager : MonoBehaviour
     [SerializeField] Transform playerPos;   // 플레이어가 평소 서 있는 위치. 현재 위치와 헷갈릴 수 있다.
     [SerializeField] Transform enemyPos;
 
-    public Player player;
-    public List<Enemy> enemyList = new List<Enemy>();
-    [SerializeField] Enemy enemyPrefab;
+    public PawnPlayer player;
+    public List<AbstractPawnEnemy> enemyList = new List<AbstractPawnEnemy>();
+    [SerializeField] AbstractPawnEnemy enemyPrefab;
 
     [Space]
 
@@ -41,7 +41,7 @@ public class PawnManager : MonoBehaviour
 
         for (var i = 0; i < enemyList.Count; ++i)
         {
-            Enemy enemy = enemyList[i];
+            AbstractPawnEnemy enemy = enemyList[i];
             enemy.UpdateUI();
         }
 
@@ -67,18 +67,18 @@ public class PawnManager : MonoBehaviour
     {
         // enemyList.Add(ReadEnemyFromJson());
         var enemy = Instantiate(enemyPrefab, enemyPos);
-        var enemyData = enemy.GetComponent<Enemy>();
+        var enemyData = enemy.GetComponent<AbstractPawnEnemy>();
         var tempEnemy = new TempEnemy();
         enemyList.Add(tempEnemy.GetTempEnemySpade(enemyData));
         UpdateUI();
     }
 
-    public Enemy ReadEnemyFromJson()
+    public AbstractPawnEnemy ReadEnemyFromJson()
     {
         // Instantiate Enemy from Enemy Prefab and Json Enemy Data
         // 테스트용으로 만들어진 json에서 1개 불러오도록 만든거니까 나중에 json구조 여러명 넣어지게 바뀌면 얘도 바꿔야할듯
         var enemyObj = Instantiate(enemyPrefab, enemyPos);
-        var enemy = enemyObj.GetComponent<Enemy>();
+        var enemy = enemyObj.GetComponent<AbstractPawnEnemy>();
         var jsonfile = Resources.Load<TextAsset>("testEnemyjson");
         JsonUtility.FromJsonOverwrite(jsonfile.text, enemy);
 

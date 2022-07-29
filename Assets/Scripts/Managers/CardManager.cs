@@ -8,10 +8,10 @@ using DG.Tweening;
 public class CardManager : MonoBehaviour
 {
     [Header("Decks")]
-    [SerializeField] List<Card> allCardDeck;
-    [SerializeField] List<Card> availableDeck;
-    [SerializeField] List<Card> handDeck;
-    [SerializeField] List<Card> discardDeck;
+    [SerializeField] List<AbstractCard> allCardDeck;
+    [SerializeField] List<AbstractCard> availableDeck;
+    [SerializeField] List<AbstractCard> handDeck;
+    [SerializeField] List<AbstractCard> discardDeck;
     
     
     [Header("Card")]
@@ -46,7 +46,7 @@ public class CardManager : MonoBehaviour
     private void SetupNGCard()
     {
         // NG카드를 오른쪽 밑에 생성하는 코드
-        Card NGCard = MakeCard(new CardData() { isNGCard = true, cardName = "NG", speed = 0, cardEffect = new List<System.Action>() { () => { Debug.Log("NG"); } } });
+        AbstractCard NGCard = MakeCard(new CardData() { isNGCard = true, cardName = "NG", speed = 0, cardEffect = new List<System.Action>() { () => { Debug.Log("NG"); } } });
         NGCard.name = "NGCard";
         NGCard.transform.parent = NGCardSlot.transform;
         NGCard.transform.position = NGCardSlot.transform.position;
@@ -65,7 +65,7 @@ public class CardManager : MonoBehaviour
     {
         // 현재 가지고 있는 카드들을 불러와 이번 전투에서 사용할 카드덱에 채워넣음
         availableDeck = ShuffleDeck(allCardDeck);
-        foreach (Card card in availableDeck)
+        foreach (AbstractCard card in availableDeck)
         {
             card.transform.parent = availableDeckPos;
         }
@@ -75,7 +75,7 @@ public class CardManager : MonoBehaviour
     {
         TempCard tempcard = new TempCard();
         // 디버그용 샘플덱 생성 코드
-        allCardDeck = new List<Card>() {
+        allCardDeck = new List<AbstractCard>() {
             MakeCard(tempcard.GetTempAttackCard()),
             MakeCard(tempcard.GetTempAttackCard()),
             MakeCard(tempcard.GetTempAttackCard()),
@@ -99,10 +99,10 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public Card MakeCard(CardData cardData) // 카드 Instantiate하는 코드
+    public AbstractCard MakeCard(CardData cardData) // 카드 Instantiate하는 코드
     {
         var cardObj = Instantiate(cardPrefab, availableDeckPos.position, Utils.QI);
-        var card = cardObj.GetComponent<Card>();
+        var card = cardObj.GetComponent<AbstractCard>();
         card.Setup(cardData);
         card.setVisible(false);
 
@@ -110,12 +110,12 @@ public class CardManager : MonoBehaviour
         return card;
     }
 
-    List<Card> ShuffleDeck(List<Card> deck) // 덱 셔플
+    List<AbstractCard> ShuffleDeck(List<AbstractCard> deck) // 덱 셔플
     {
         for (int i = 0; i < deck.Count; i++)
         {
             int rand = UnityEngine.Random.Range(i, deck.Count);
-            Card temp = deck[i];
+            AbstractCard temp = deck[i];
             deck[i] = deck[rand];
             deck[rand] = temp;
         }
@@ -127,7 +127,7 @@ public class CardManager : MonoBehaviour
         int leftCardNum = discardDeck.Count;
         for (int i = 0; i < leftCardNum; i++)
         {
-            Card card = discardDeck[0];
+            AbstractCard card = discardDeck[0];
             availableDeck.Add(card);
             discardDeck.RemoveAt(0);
             card.MoveTransform(new PRS(availableDeckPos.position, Utils.QI, card.originPRS.scale), false);
@@ -146,7 +146,7 @@ public class CardManager : MonoBehaviour
             ResetAvailableDeck();
         }
 
-        Card card = availableDeck[0];
+        AbstractCard card = availableDeck[0];
         handDeck.Add(card);
         card.setVisible(true);
         card.transform.parent = handDeckCollider.transform;
@@ -168,7 +168,7 @@ public class CardManager : MonoBehaviour
         AlignCard();
     }
 
-    public void DiscardCard(Card card)
+    public void DiscardCard(AbstractCard card)
     {
         // TODO: NG카드나 적카드는 따로 만들어서 따로 모션 넣는게 좋을지도?
         if (card.cardData.isNGCard || card.cardData.isEnemyCard)
@@ -210,7 +210,7 @@ public class CardManager : MonoBehaviour
 
     #region CardMovementControl
 
-    void fitSlotable(Card card, Slot slot)
+    void fitSlotable(AbstractCard card, Slot slot)
     {
         /* HandDeck에 있던 카드를 Slot에 꽂는 코드
         Card card: HandDeck에 있던 카드
@@ -229,7 +229,7 @@ public class CardManager : MonoBehaviour
         slot.slotedCard = card;
     }
 
-    void returnHandDeck(Card card)
+    void returnHandDeck(AbstractCard card)
     {
         /* Slot에 있던 카드를 HandDeck으로 내리는 코드
         Card card: 내리는 대상인 카드 */
@@ -243,7 +243,7 @@ public class CardManager : MonoBehaviour
         handDeck.Add(card);
     }
 
-    void replaceCard(Slot slot, Card originCard, Card replaceCard)
+    void replaceCard(Slot slot, AbstractCard originCard, AbstractCard replaceCard)
     {
         /* handdeck에 있던 replaceCard와 slot에 꽂혀있던 originCard를 서로 바꾸는 코드.
         Slot slot: 타겟 슬롯
@@ -281,7 +281,7 @@ public class CardManager : MonoBehaviour
 
     #region CardMouse
 
-    internal void CardMouseUp(Card card)
+    internal void CardMouseUp(AbstractCard card)
     {
         // TODO: 이거 가끔 카드가 안잡힐 때가 있는거 같은데 OnMouse 함수 자체가 작동을 안하네요
         // 카드를 움직였을때 어떤 위치로 보내는가 판별하는 코드 TODO: 이거 다른 곳으로 정리해서 옮기기
@@ -358,9 +358,9 @@ public class CardManager : MonoBehaviour
         else if (card.slot.GetComponent<Slot>() && targetSlot) // 카드를 슬롯에서 ->
         {
             // 슬롯 <-> 슬롯 바꾸기
-            Card cardA = card;
+            AbstractCard cardA = card;
             Slot slotA = card.slot.GetComponent<Slot>();
-            Card cardB = targetSlot.slotedCard;
+            AbstractCard cardB = targetSlot.slotedCard;
             Slot slotB = targetSlot;
 
             if (cardB)
@@ -415,7 +415,7 @@ public class CardManager : MonoBehaviour
 
     }
 
-    internal void CardMouseDrag(Card card) // 카드 드래그
+    internal void CardMouseDrag(AbstractCard card) // 카드 드래그
     {
         if (!isCardSelectable) return;  // 카드 선택 불가능 상태이면 드래그 하지 않음
 
@@ -434,11 +434,11 @@ public class CardManager : MonoBehaviour
 
     #region Loading
 
-    public Enemy ReadCardFromJson()
+    public AbstractPawnEnemy ReadCardFromJson()
     {
         // Instantiate Enemy from Enemy Prefab and Json Enemy Data
         var enemyObj = Instantiate(cardPrefab);
-        var enemy = enemyObj.GetComponent<Enemy>();
+        var enemy = enemyObj.GetComponent<AbstractPawnEnemy>();
         var jsonfile = Resources.Load<TextAsset>("testCardjson");
         JsonUtility.FromJsonOverwrite(jsonfile.text, enemy);
 

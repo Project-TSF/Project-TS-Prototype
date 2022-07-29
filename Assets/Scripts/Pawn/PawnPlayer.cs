@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CustomParser : MonoBehaviour
+public class PawnPlayer : Pawn
 {
     
 }

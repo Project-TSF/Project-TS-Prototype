@@ -7,7 +7,7 @@ using DG.Tweening;
 using System.Threading.Tasks;
 
 [System.Serializable]
-public class Card : MonoBehaviour
+public class AbstractCard : MonoBehaviour
 {
     [SerializeField] SpriteRenderer card;
     [SerializeField] TMP_Text nameTMP;
