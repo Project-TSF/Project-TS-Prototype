@@ -115,6 +115,7 @@ public class Pawn : MonoBehaviour
         foreach (PawnBuffIndicator buffIndicator in buffIndicatorList)
         {
             buffIndicator.transform.localPosition = new Vector3(6, 4.5f - i*1.5f, 0);
+            i++;
         }
     }
 
