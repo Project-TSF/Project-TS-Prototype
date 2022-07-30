@@ -16,10 +16,15 @@ public abstract class AbstractProp : MonoBehaviour
     
 
     [Header("UI Elements")]
-    public TMP_Text propStringTMP;
+    private TMP_Text propStringTMP;
     public string propText;
 
-    public void UpdateUI()
+    private void Awake() {
+        propStringTMP = transform.Find("PropStringTMP").GetComponent<TMP_Text>();
+        propText = "";
+    }
+
+    public void UpdateText()
     {
         propStringTMP.text = propText;
     }
@@ -27,5 +32,18 @@ public abstract class AbstractProp : MonoBehaviour
 
     // Events
 
-    public virtual void onEquip() {}
+    private void OnEnable() {
+        BattleManager.OnTurnStartEvent += OnTurnStart;
+        BattleManager.OnTurnEndEvent += OnTurnEnd;
+    }
+
+    private void OnDisable() {
+        BattleManager.OnTurnStartEvent += OnTurnStart;
+        BattleManager.OnTurnEndEvent += OnTurnEnd;
+    }
+
+    public virtual void OnEquip() {}
+    public virtual void OnUnequip() {}
+    public virtual void OnTurnStart() {}
+    public virtual void OnTurnEnd() {}
 }

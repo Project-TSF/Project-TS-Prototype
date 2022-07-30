@@ -32,8 +32,10 @@ public class BattleManager : MonoBehaviour
 
 
     //Events
-    public delegate void OnTurnStart();
-    public delegate void OnTurnEnd();
+    public delegate void onTurnStart();
+    public static event onTurnStart OnTurnStartEvent;
+    public delegate void onTurnEnd();
+    public static event onTurnEnd OnTurnEndEvent;
 
 
     public static BattleManager Inst { get; private set; }
@@ -49,8 +51,6 @@ public class BattleManager : MonoBehaviour
         // 디버그용
         PawnManager.Inst.GetTestEnemy();
         GetTestProps();
-        GetTestProps();
-        GetTestProps();
 
         // 여기까지 디버그용
 
@@ -64,6 +64,7 @@ public class BattleManager : MonoBehaviour
     public void UpdateUI()
     {
         PawnManager.Inst.UpdateUI();
+        propList.ForEach(prop => prop.UpdateText());
         AlignProps();
     }
 
@@ -72,6 +73,9 @@ public class BattleManager : MonoBehaviour
     public void StartTurn() // 턴 시작
     {
         Debug.Log("<<StartTurn>>");
+
+        OnTurnStartEvent?.Invoke();
+
         MakeSlotsetAsAmount(slotAmount);
 
         if (currentActNum > maxActNum) // 모든 Act가 지나면 다시 0부터 시작
@@ -100,6 +104,8 @@ public class BattleManager : MonoBehaviour
 
             return;
         }
+
+        OnTurnEndEvent?.Invoke();
 
         await GameObject.Find("BtnTogglePanel").GetComponent<UI_BtnTogglePanel>().ClosePanel();
         GameObject.Find("BtnTogglePanel").GetComponent<UI_BtnTogglePanel>().isAvailable = false;
@@ -287,9 +293,9 @@ public class BattleManager : MonoBehaviour
     private void GetTestProps()
     {
         GameObject propObj = Instantiate(propPrefab);
-        AbstractProp prop = propObj.AddComponent<TestProp_Blueberries>() as AbstractProp;
+        AbstractProp prop = propObj.AddComponent<TestProp_TimeBomb>() as AbstractProp;
         prop.transform.SetParent(propStartPos.transform, false);
-        prop.onEquip();
+        prop.OnEquip();
 
         propList.Add(prop);
 
