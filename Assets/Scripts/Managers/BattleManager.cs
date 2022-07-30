@@ -32,6 +32,9 @@ public class BattleManager : MonoBehaviour
 
 
     //Events
+    public delegate void onPostEncounterInitialize();
+    public static event onPostEncounterInitialize OnPostEncounterInitializeEvent;
+
     public delegate void onTurnStart();
     public static event onTurnStart OnTurnStartEvent;
     public delegate void onTurnEnd();
@@ -43,10 +46,10 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        StartBattle();
+        InitializeBattleEncounter();
     }
 
-    public void StartBattle()
+    public void InitializeBattleEncounter()
     {
         // 디버그용
         PawnManager.Inst.GetTestEnemy();
@@ -56,6 +59,8 @@ public class BattleManager : MonoBehaviour
 
         maxActNum = PawnManager.Inst.enemyList[0].pattern.acts.Count - 1;
         currentActNum = 0;
+
+        OnPostEncounterInitializeEvent?.Invoke();
 
         StartTurn();
         UpdateUI();

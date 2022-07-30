@@ -27,12 +27,6 @@ public class PawnManager : MonoBehaviour
     void Start()
     {
 
-        // var tempEnemyGen = new TempEnemy();
-        // enemyList.Add(tempEnemyGen.GetTempEnemySpade(Instantiate(enemyPrefab, enemyPos)));
-        // Debug.Log(JsonUtility.ToJson(enemyList[0]));
-        
-        
-        // UpdateUI();
     }
 
     public void UpdateUI()
