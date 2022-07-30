@@ -8,20 +8,32 @@ using System;
 
 public class BattleManager : MonoBehaviour
 {
-    [SerializeField] Transform slotStartPos;
-
     [Header("Slot Panel")]
 
     [SerializeField] GameObject slotPanel;
     [SerializeField] Slot slotPrefab;
     [SerializeField] Transform slotGenPos;
+    [SerializeField] Transform slotStartPos;
     [SerializeField] List<SlotSet> slotsets;
     public int slotAmount;
+
+
+    [Header("Props")]
+
+    [SerializeField] GameObject propPrefab;
+    [SerializeField] Transform propStartPos;
+    public List<AbstractProp> propList = new List<AbstractProp>();
+
 
     [Header("Current Game Status")]
 
     public int maxActNum;
     public int currentActNum;
+
+
+    //Events
+    public delegate void OnTurnStart();
+    public delegate void OnTurnEnd();
 
 
     public static BattleManager Inst { get; private set; }
@@ -36,6 +48,9 @@ public class BattleManager : MonoBehaviour
     {
         // 디버그용
         PawnManager.Inst.GetTestEnemy();
+        GetTestProps();
+        GetTestProps();
+        GetTestProps();
 
         // 여기까지 디버그용
 
@@ -49,6 +64,7 @@ public class BattleManager : MonoBehaviour
     public void UpdateUI()
     {
         PawnManager.Inst.UpdateUI();
+        AlignProps();
     }
 
     #region Turn
@@ -109,11 +125,6 @@ public class BattleManager : MonoBehaviour
         StartTurn();
     }
 
-    void UseCardEffectFromQueue()
-    {
-
-    }
-
     #endregion
 
     #region Slot
@@ -159,11 +170,11 @@ public class BattleManager : MonoBehaviour
         slotEnemy.isMoveable = false;
 
         // Slotset의 위치를 옮기고 hierarchy 정리를 위해서 parent를 지정해주기
-        SlotSetObj.transform.parent = slotStartPos.transform;
+        SlotSetObj.transform.SetParent(slotStartPos.transform);
 
         // Slot들을 SlotSet 안에 넣어주기
-        slotMy.transform.parent = SlotSetObj.transform;
-        slotEnemy.transform.parent = SlotSetObj.transform;
+        slotMy.transform.SetParent(SlotSetObj.transform);
+        slotEnemy.transform.SetParent(SlotSetObj.transform);
 
         // SlotSet 안에서 Slot들의 위치 조절
         slotMy.transform.localPosition = new Vector3(0, 0, 0);
@@ -187,6 +198,7 @@ public class BattleManager : MonoBehaviour
         // 적 카드를 적 슬롯 위에 놓기
         slot.slotedCard.transform.parent = slot.transform;
         slot.slotedCard.transform.localPosition = new Vector3(0, 0, 0);
+
         slot.slotedCard.originPRS = new PRS(
             slot.slotedCard.transform.position,
             Utils.QI,
@@ -267,6 +279,34 @@ public class BattleManager : MonoBehaviour
 
         return timedQueue;
     }
+
+    #endregion
+
+    #region Prop
+    
+    private void GetTestProps()
+    {
+        GameObject propObj = Instantiate(propPrefab);
+        AbstractProp prop = propObj.AddComponent<TestProp_Blueberries>() as AbstractProp;
+        prop.transform.SetParent(propStartPos.transform, false);
+        prop.onEquip();
+
+        propList.Add(prop);
+
+        AlignProps();
+    }
+
+    public void AlignProps()
+    {
+        var i = 0;
+        foreach (AbstractProp prop in propList)
+        {
+            prop.transform.localPosition = new Vector3(100 * i, 0, 0);
+            i++;
+        }
+    }
+
+
 
     #endregion
 

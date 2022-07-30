@@ -155,7 +155,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 600, y: -50}
+  m_AnchoredPosition: {x: 600, y: -40}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &124583396
@@ -1346,12 +1346,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba6ae8359026c447855c47db5e1268e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotStartPos: {fileID: 605638680}
   slotPanel: {fileID: 2035894217}
   slotPrefab: {fileID: 50971282251111368, guid: 126130b4d7f159d4eb09a323d5d18a61, type: 3}
   slotGenPos: {fileID: 1908599405}
+  slotStartPos: {fileID: 605638680}
   slotsets: []
   slotAmount: 3
+  propPrefab: {fileID: 8608710641508443443, guid: 42373e406c3f7df4fa26b67aaefed68c, type: 3}
+  propStartPos: {fileID: 97835517}
+  propList: []
   maxActNum: 0
   currentActNum: 0
 --- !u!1 &1274321416
