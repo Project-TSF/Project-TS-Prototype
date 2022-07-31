@@ -4,24 +4,23 @@ using UnityEngine;
 
 using TMPro;
 
-public abstract class AbstractProp : MonoBehaviour
+
+public class AbstractProp : MonoBehaviour
 {
     public string ID;
     public string propName;
     public string propDescription;
-
     public string ImgPath;
-    public Sprite Img;
-    public SpriteRenderer ImgRenderer;
-    
 
     [Header("UI Elements")]
+    public Sprite Img;
+    public SpriteRenderer ImgRenderer;
+
     private TMP_Text propStringTMP;
-    public string propText;
+    public string propText = "";
 
     private void Awake() {
         propStringTMP = transform.Find("PropStringTMP").GetComponent<TMP_Text>();
-        propText = "";
     }
 
     public void UpdateText()

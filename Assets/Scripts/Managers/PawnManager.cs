@@ -57,7 +57,7 @@ public class PawnManager : MonoBehaviour
 
     #region Enemy
 
-    public void GetTestEnemy()
+    public void GetEnemy()
     {
         // enemyList.Add(ReadEnemyFromJson());
         var enemy = Instantiate(enemyPrefab, enemyPos);
@@ -65,23 +65,10 @@ public class PawnManager : MonoBehaviour
         var tempEnemy = new TempEnemy();
         enemyList.Add(tempEnemy.GetTempEnemySpade(enemyData));
         UpdateUI();
+
+        return ;
     }
 
-    public AbstractPawnEnemy ReadEnemyFromJson()
-    {
-        // Instantiate Enemy from Enemy Prefab and Json Enemy Data
-        // 테스트용으로 만들어진 json에서 1개 불러오도록 만든거니까 나중에 json구조 여러명 넣어지게 바뀌면 얘도 바꿔야할듯
-        var enemyObj = Instantiate(enemyPrefab, enemyPos);
-        var enemy = enemyObj.GetComponent<AbstractPawnEnemy>();
-        var jsonfile = Resources.Load<TextAsset>("testEnemyjson");
-        JsonUtility.FromJsonOverwrite(jsonfile.text, enemy);
-
-        enemy.healthTMP.text = enemy.health + " / " + enemy.maxHealth;
-        enemy.sanityTMP.text = enemy.sanity + " / " + enemy.maxSanity;
-        enemy.shieldTMP.text = enemy.shield.ToString();
-
-        return enemy;
-    }
 
     public void AlignEnemy() // 폰 정렬하는 함수
     {

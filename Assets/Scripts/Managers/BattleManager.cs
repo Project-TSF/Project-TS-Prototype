@@ -52,8 +52,9 @@ public class BattleManager : MonoBehaviour
     public void InitializeBattleEncounter()
     {
         // 디버그용
-        PawnManager.Inst.GetTestEnemy();
-        GetTestProps();
+        PawnManager.Inst.GetEnemy();
+        GameManager.Inst.dataLoader.poolProp["TestProp_Timebomb"].Invoke();
+        
 
         // 여기까지 디버그용
 
@@ -295,10 +296,14 @@ public class BattleManager : MonoBehaviour
 
     #region Prop
     
-    private void GetTestProps()
+    public void InstProps<T>(string propName = null) where T : AbstractProp
     {
         GameObject propObj = Instantiate(propPrefab);
-        AbstractProp prop = propObj.AddComponent<TestProp_TimeBomb>() as AbstractProp;
+        AbstractProp prop = propObj.AddComponent<T>() as AbstractProp;
+
+        if (propName == null) prop.name = prop.propName;
+        else prop.name = propName; 
+
         prop.transform.SetParent(propStartPos.transform, false);
         prop.OnEquip();
 

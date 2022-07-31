@@ -2,38 +2,42 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class DataLoader
 {
-    public Dictionary<string, PawnEnemyGroups> pawnEnemyGroups = new Dictionary<string, PawnEnemyGroups>();
-    public Dictionary<string, Encounter> encounters = new Dictionary<string, Encounter>();
+    public Dictionary<string, PawnEnemyGroups> poolPawnEnemyGroup = new Dictionary<string, PawnEnemyGroups>();
+    public Dictionary<string, Encounter> poolEncounter = new Dictionary<string, Encounter>();
+    public Dictionary<string, Action> poolProp = new Dictionary<string, Action>();
 
-    public void AddMonster(string monsterGroupID, AbstractPawnEnemy enemy)
+
+    public void AddMonster(string monsterGroupID, System.Action enemy)
     {
-        pawnEnemyGroups.Add(monsterGroupID, new PawnEnemyGroups(monsterGroupID, new List<AbstractPawnEnemy>() {enemy}));
+        poolPawnEnemyGroup.Add(monsterGroupID, new PawnEnemyGroups(monsterGroupID, new List<AbstractPawnEnemy>() {}));
     }
-
+    public void AddMonster(System.Action enemy)
+    {
+        string id = enemy.GetType().ToString();
+        poolPawnEnemyGroup.Add(id, new PawnEnemyGroups(id, new List<AbstractPawnEnemy>() {}));
+    }
     public void AddMonsterGroup(string encounterID, List<AbstractPawnEnemy> enemies)
     {
-        pawnEnemyGroups.Add(encounterID, new PawnEnemyGroups(encounterID, enemies));
+        poolPawnEnemyGroup.Add(encounterID, new PawnEnemyGroups(encounterID, enemies));
     }
 
     public void AddBattleEncounter(string encounterID, PawnEnemyGroups enemies)
     {
-        encounters.Add(encounterID, new Encounter(encounterID, enemies));
+        poolEncounter.Add(encounterID, new Encounter(encounterID, enemies));
     }
 
-    public Action GetEnemy()
+    public void AddPropToPool<T>(string propID) where T: AbstractProp
     {
-        return () =>
-        {
-            Debug.Log("GetEnemy");
-        };
+        poolProp.Add(propID, () => BattleManager.Inst.InstProps<T>());
     }
-
-    public void AddBoss()
+    public void AddPropToPool<T>() where T: AbstractProp
     {
-
+        string propID = typeof(T).ToString();
+        poolProp.Add(propID, () => BattleManager.Inst.InstProps<T>());
     }
 }
 

@@ -6,7 +6,6 @@ public class TestProp_Blueberries : AbstractProp
 {
     public TestProp_Blueberries()
     {
-        ID = "TestProp_Blueberries";
         propName = "Blueberries";
         propDescription = "Add 10 HP to Max HP";
     }
@@ -24,7 +23,6 @@ public class TestProp_TimeBomb : AbstractProp
 
     public TestProp_TimeBomb()
     {
-        ID = "TestProp_TimeBomb";
         propName = "Time Bomb";
         propDescription = "Give 10 Damage to all enemies after 3 Turn passes";
         propText = bombCount.ToString();
@@ -41,7 +39,7 @@ public class TestProp_TimeBomb : AbstractProp
             {
                 PawnBehaviorList.Inst.Behavior_Action_NormalAttack(PawnManager.Inst.player, enemy, 10);
             });
-            bombCount = 0;
+            bombCount = 1;
         }
         else
         {

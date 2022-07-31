@@ -23,13 +23,15 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         // 로딩
-        dataLoader.AddMonster("testMonsterGroup", );
-        dataLoader.AddBattleEncounter("testBattleEncounter", );
+        // dataLoader.AddMonster("testMonsterGroup", );
+        // dataLoader.AddBattleEncounter("testBattleEncounter", );
+        dataLoader.AddPropToPool<TestProp_Blueberries>(typeof(TestProp_Blueberries).ToString());
+        dataLoader.AddPropToPool<TestProp_TimeBomb>("TestProp_Timebomb");
 
         OnPostInitializeEvent?.Invoke();
     }
 
-    public void LoadEncounter() {
+    public void LoadTestBattleEncounter() {
         SceneManager.LoadScene("BattleScene");
     }
 
