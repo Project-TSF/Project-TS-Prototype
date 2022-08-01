@@ -2,6 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class PawnEnemy_Spade : AbstractPawnEnemy
+{
+    public override string pawnName { get; set; } = "Spade";
+    public override int health { get; set; } = 20;
+    public override int maxHealth { get; set; } = 20;
+    public override int sanity { get; set; } = 20;
+    public override int maxSanity { get; set; } = 20;
+
+    public AbstractCard GetNormalAttackCard()
+    {
+        AbstractCard NormalAttackCard = new AbstractCard()
+        {
+            cardName = "Normal Attack",
+            cardDescription = "Deal 10 damage to all enemies",
+            cardImgPath = "",
+            cardType = CardType.NormalAttack,
+            cardCost = 0,
+            cardTarget = CardTarget.AllEnemies,
+            cardEffect = (Pawn targetPawn, Pawn userPawn) =>
+            {
+                PawnManager.Inst.enemyList.ForEach(enemy =>
+                {
+                    PawnBehaviorList.Inst.Behavior_Action_NormalAttack(userPawn, enemy, 10);
+                });
+            }
+        };
+
+        return NormalAttackCard;
+    }
+}
+
 public class TempEnemy
 {
     public AbstractPawnEnemy GetTempEnemySpade(AbstractPawnEnemy enemy)

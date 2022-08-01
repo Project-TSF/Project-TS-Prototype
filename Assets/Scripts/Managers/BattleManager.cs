@@ -44,6 +44,10 @@ public class BattleManager : MonoBehaviour
     public static BattleManager Inst { get; private set; }
     void Awake() => Inst = this;
 
+
+    // DEBUG
+    DataLoader dataLoader = new DataLoader();
+
     private void Start()
     {
         InitializeBattleEncounter();
@@ -52,8 +56,13 @@ public class BattleManager : MonoBehaviour
     public void InitializeBattleEncounter()
     {
         // 디버그용
+        dataLoader.AddPropToPool<TestProp_Blueberries>();
+        dataLoader.AddPropToPool<TestProp_TimeBomb>();
+
+
+
         PawnManager.Inst.GetEnemy();
-        GameManager.Inst.dataLoader.poolProp["TestProp_Timebomb"].Invoke();
+        dataLoader.poolProp[typeof(TestProp_Blueberries).ToString()].Invoke();
         
 
         // 여기까지 디버그용
@@ -296,13 +305,20 @@ public class BattleManager : MonoBehaviour
 
     #region Prop
     
-    public void InstProps<T>(string propName = null) where T : AbstractProp
+    public void InstProps<T>(string propID = null) where T : AbstractProp
     {
         GameObject propObj = Instantiate(propPrefab);
         AbstractProp prop = propObj.AddComponent<T>() as AbstractProp;
 
-        if (propName == null) prop.name = prop.propName;
-        else prop.name = propName; 
+        if (propID == null)
+        { 
+            prop.ID = prop.GetType().ToString();
+        }
+        else 
+        {
+            prop.ID = propID;
+        } 
+        prop.name = prop.propName;
 
         prop.transform.SetParent(propStartPos.transform, false);
         prop.OnEquip();

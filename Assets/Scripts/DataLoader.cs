@@ -41,6 +41,11 @@ public class DataLoader
     }
 }
 
+public class Pool
+{
+
+}
+
 public class PawnEnemyGroups
 {
     public string enemyGroupID;

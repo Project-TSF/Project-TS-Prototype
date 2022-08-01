@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 
 
-public class Pawn : MonoBehaviour
+public abstract class Pawn : MonoBehaviour
 {
     // public Hashtable variables = new Hashtable();
     
@@ -14,17 +14,17 @@ public class Pawn : MonoBehaviour
     public string ID = "";
 
     // 이름
-    public string pawnName = "";
+    public abstract string pawnName {get;set;}
 
 
     // 체력
-    public int health = 0;
-    public int maxHealth = 0;
+    public abstract int health {get;set;}
+    public abstract int maxHealth {get;set;}
 
 
     // 정신력
-    public int sanity = 0;
-    public int maxSanity = 0;
+    public abstract int sanity {get;set;}
+    public abstract int maxSanity {get;set;}
 
     // 쉴드
     public int shield = 0;

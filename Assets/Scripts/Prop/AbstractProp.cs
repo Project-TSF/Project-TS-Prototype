@@ -5,12 +5,12 @@ using UnityEngine;
 using TMPro;
 
 
-public class AbstractProp : MonoBehaviour
+public abstract class AbstractProp : MonoBehaviour
 {
     public string ID;
-    public string propName;
-    public string propDescription;
-    public string ImgPath;
+    public abstract string propName {get;set;}
+    public abstract string propDescription {get;set;}
+    public abstract string ImgPath {get;set;}
 
     [Header("UI Elements")]
     public Sprite Img;
