@@ -46,8 +46,7 @@ public class CardManager : MonoBehaviour
     private void SetupNGCard()
     {
         // NG카드를 오른쪽 밑에 생성하는 코드
-        AbstractCard NGCard = MakeCard(new CardData() { isNGCard = true, cardName = "NG", speed = 0, cardEffect = new List<System.Action>() { () => { Debug.Log("NG"); } } });
-        NGCard.name = "NGCard";
+        AbstractCard NGCard = InstCard<NGCard>();
         NGCard.transform.parent = NGCardSlot.transform;
         NGCard.transform.position = NGCardSlot.transform.position;
 
@@ -73,19 +72,18 @@ public class CardManager : MonoBehaviour
 
     void SetupSampleDeck()
     {
-        TempCard tempcard = new TempCard();
         // 디버그용 샘플덱 생성 코드
         allCardDeck = new List<AbstractCard>() {
-            MakeCard(tempcard.GetTempAttackCard()),
-            MakeCard(tempcard.GetTempAttackCard()),
-            MakeCard(tempcard.GetTempAttackCard()),
-            MakeCard(tempcard.GetTempAttackCard()),
-            MakeCard(tempcard.GetTempAttackCard()),
-            MakeCard(tempcard.GetTempGetShieldCard()),
-            MakeCard(tempcard.GetTempGetShieldCard()),
-            MakeCard(tempcard.GetTempGetShieldCard()),
-            MakeCard(tempcard.GetTempGetShieldCard()),
-            MakeCard(tempcard.GetTempPowerCard()),
+            InstCard<TempCard_AttackCard>(),
+            InstCard<TempCard_AttackCard>(),
+            InstCard<TempCard_AttackCard>(),
+            InstCard<TempCard_AttackCard>(),
+            InstCard<TempCard_AttackCard>(),
+            InstCard<TempCard_GetShieldCard>(),
+            InstCard<TempCard_GetShieldCard>(),
+            InstCard<TempCard_GetShieldCard>(),
+            InstCard<TempCard_GetShieldCard>(),
+            InstCard<TempCard_PowerCard>(),
         };
     }
 
@@ -99,14 +97,24 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public AbstractCard MakeCard(CardData cardData) // 카드 Instantiate하는 코드
+    public AbstractCard InstCard<T>() where T: AbstractCard    // 카드 Instantiate하는 코드
     {
         var cardObj = Instantiate(cardPrefab, availableDeckPos.position, Utils.QI);
-        var card = cardObj.GetComponent<AbstractCard>();
-        card.Setup(cardData);
+        var card = cardObj.AddComponent<T>() as AbstractCard;
+        card.Setup();
         card.setVisible(false);
 
-        cardObj.name = card.cardData.cardName;
+        cardObj.name = card.cardName;
+        return card;
+    }
+    public AbstractCard InstCard(Type cardType)
+    {
+        var cardObj = Instantiate(cardPrefab, availableDeckPos.position, Utils.QI);
+        var card = cardObj.AddComponent(cardType) as AbstractCard;
+        card.Setup();
+        card.setVisible(false);
+
+        cardObj.name = card.cardName;
         return card;
     }
 
@@ -171,7 +179,7 @@ public class CardManager : MonoBehaviour
     public void DiscardCard(AbstractCard card)
     {
         // TODO: NG카드나 적카드는 따로 만들어서 따로 모션 넣는게 좋을지도?
-        if (card.cardData.isNGCard || card.cardData.isEnemyCard)
+        if (card.cardType == CardType.Enemy || card.cardType == CardType.NG)
         {
             Destroy(card.gameObject);
             return;
@@ -300,7 +308,7 @@ public class CardManager : MonoBehaviour
 
         if (!targetSlotable)  // 밑에 Slotable한 오브젝트가 없을 때
         {
-            if (card.cardData.isNGCard)  // 만약 카드가 NG카드라면 그 카드를 파괴하고 원래 NG카드 위치에 재생성함
+            if (card.cardType == CardType.NG)  // 만약 카드가 NG카드라면 그 카드를 파괴하고 원래 NG카드 위치에 재생성함
             {
                 Debug.Log("Destroy NG Card");
                 Destroy(card.gameObject);
@@ -377,7 +385,7 @@ public class CardManager : MonoBehaviour
 
         else if (card.slot.GetComponent<Slot>() && targetSlotable == handDeckCollider) // 카드를 슬롯에서 -> handDeck으로
         {
-            if (card.cardData.isNGCard) // 카드가 NG카드라면 원래 위치(슬롯)으로 복귀시킴: TODO: 파괴시키는게 나을까요?
+            if (card.cardType == CardType.NG) // 카드가 NG카드라면 원래 위치(슬롯)으로 복귀시킴: TODO: 파괴시키는게 나을까요?
             {
                 card.MoveTransform(card.originPRS, true, 0.1f);
             }

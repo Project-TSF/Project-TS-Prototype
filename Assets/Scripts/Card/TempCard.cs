@@ -2,50 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TempCard
+public class TempCard_AttackCard : AbstractCard
 {
-    public CardData GetTempAttackCard()
+    public override CardType cardType { get; set; } = CardType.Action;
+    public override string cardName { get; set; } = "Attack";
+    public override int speed { get; set; } = Random.Range(0, 10);
+
+    int attackValue = 4;
+
+    public override void onUse()
     {
-        CardData cardData = new CardData();
-
-        cardData.cardName = "Attack";
-        cardData.speed = Random.Range(0, 10);
-
-        var attackValue = 4;
-        // Pawn target = null;
-
-        cardData.cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Action_NormalAttack(PawnManager.Inst.player, PawnManager.Inst.enemyList[0], attackValue) };
-
-        return cardData;
+        PawnBehaviorList.Inst.Behavior_Action_NormalAttack(PawnManager.Inst.player, PawnManager.Inst.enemyList[0], attackValue);
     }
+}
 
-    public CardData GetTempGetShieldCard()
+public class TempCard_GetShieldCard : AbstractCard
+{
+    public override CardType cardType { get; set; } = CardType.Action;
+    public override string cardName { get; set; } = "Get Shield";
+    public override int speed { get; set; } = Random.Range(0, 10);
+
+    int shieldValue = 5;
+
+    public override void onUse()
     {
-        CardData cardData = new CardData();
-
-        cardData.cardName = "Shield";
-        cardData.speed = Random.Range(0, 10);
-
-        var shieldValue = 4;
-        // Pawn target = null;
-
-        cardData.cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Action_GetShield(PawnManager.Inst.player, PawnManager.Inst.player, shieldValue) };
-
-        return cardData;
+        PawnBehaviorList.Inst.Behavior_Action_GetShield(PawnManager.Inst.player, PawnManager.Inst.player, shieldValue);
     }
+}
 
-    public CardData GetTempPowerCard()
+public class TempCard_PowerCard : AbstractCard
+{
+    public override CardType cardType { get; set; } = CardType.Skill;
+    public override string cardName { get; set; } = "Power";
+    public override int speed { get; set; } = Random.Range(0, 10);
+
+    int powerValue = 1;
+
+    public override void onUse()
     {
-        CardData cardData = new CardData();
-
-        cardData.cardName = "Power";
-        cardData.speed = Random.Range(0, 10);
-
-        var powerValue = 1;
-        // Pawn target = null;
-
-        cardData.cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Buff_Power(PawnManager.Inst.player, PawnManager.Inst.player, powerValue) };
-
-        return cardData;
+        PawnBehaviorList.Inst.Behavior_Buff_Power(PawnManager.Inst.player, PawnManager.Inst.player, powerValue);
     }
 }

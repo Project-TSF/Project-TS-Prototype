@@ -6,29 +6,52 @@ using UnityEngine.Pool;
 
 public class DataLoader
 {
-    public Dictionary<string, PawnEnemyGroups> poolPawnEnemyGroup = new Dictionary<string, PawnEnemyGroups>();
+    public Dictionary<string, PawnEnemyGroups> poolEnemyGroup = new Dictionary<string, PawnEnemyGroups>();
     public Dictionary<string, Encounter> poolEncounter = new Dictionary<string, Encounter>();
     public Dictionary<string, Action> poolProp = new Dictionary<string, Action>();
 
 
-    public void AddMonster(string monsterGroupID, System.Action enemy)
+
+    public void AddEnemy<T>(string enemyGroupID) where T: AbstractPawnEnemy
     {
-        poolPawnEnemyGroup.Add(monsterGroupID, new PawnEnemyGroups(monsterGroupID, new List<AbstractPawnEnemy>() {}));
+        poolEnemyGroup.Add(enemyGroupID, new PawnEnemyGroups(enemyGroupID, new List<Action>{() => PawnManager.Inst.InstEnemy<T>()} ));;
     }
-    public void AddMonster(System.Action enemy)
+    public void AddEnemy<T>() where T: AbstractPawnEnemy
     {
-        string id = enemy.GetType().ToString();
-        poolPawnEnemyGroup.Add(id, new PawnEnemyGroups(id, new List<AbstractPawnEnemy>() {}));
-    }
-    public void AddMonsterGroup(string encounterID, List<AbstractPawnEnemy> enemies)
-    {
-        poolPawnEnemyGroup.Add(encounterID, new PawnEnemyGroups(encounterID, enemies));
+        string id = typeof(T).ToString();
+        poolEnemyGroup.Add(id, new PawnEnemyGroups(id, new List<Action>{() => PawnManager.Inst.InstEnemy<T>()} ));;
     }
 
-    public void AddBattleEncounter(string encounterID, PawnEnemyGroups enemies)
+    public void AddEnemyGroup(string encounterID, List<Type> enemies)
     {
-        poolEncounter.Add(encounterID, new Encounter(encounterID, enemies));
+        List<Action> actions = new List<Action>();
+
+        foreach (Type enemyType in enemies)
+        {
+            actions.Add(() => PawnManager.Inst.InstEnemy(enemyType));
+        }
+
+        poolEnemyGroup.Add(encounterID, new PawnEnemyGroups(encounterID, actions));
     }
+
+
+
+    public void AddBattleEncounter(string encounterID, Encounter encounter)
+    {
+        poolEncounter.Add(encounterID, encounter);
+    }
+
+    public void AddBattleEncounter(string encounterID, PawnEnemyGroups enemyGroup, Pattern pattern, int encounterLevel=1, int encounterProb=1)
+    {
+        poolEncounter.Add(encounterID, new Encounter(encounterID, enemyGroup, encounterLevel, encounterProb, pattern));
+    }
+    public void AddBattleEncounter(string encounterID, string enemyGroupID, Pattern pattern, int encounterLevel=1, int encounterProb=1)
+    {
+        poolEncounter.Add(encounterID, new Encounter(encounterID, poolEnemyGroup[enemyGroupID], encounterLevel, encounterProb, pattern));
+    }
+    
+
+
 
     public void AddPropToPool<T>(string propID) where T: AbstractProp
     {
@@ -41,17 +64,12 @@ public class DataLoader
     }
 }
 
-public class Pool
-{
-
-}
-
 public class PawnEnemyGroups
 {
     public string enemyGroupID;
-    public List<AbstractPawnEnemy> pawnEnemies;
+    public List<Action> pawnEnemies;
 
-    public PawnEnemyGroups(string enemyGroupID, List<AbstractPawnEnemy> enemies)
+    public PawnEnemyGroups(string enemyGroupID, List<Action> enemies)
     {
         this.enemyGroupID = enemyGroupID;
         this.pawnEnemies = enemies;
@@ -68,9 +86,17 @@ public class Encounter
 
     public Pattern pattern;
 
-    public Encounter(string encounterID, PawnEnemyGroups pawnEnemyGroups)
+    public Encounter(
+        string encounterID,
+        PawnEnemyGroups pawnEnemyGroups,
+        int encounterLevel,
+        int encounterProbability,
+        Pattern pattern)
     {
         this.encounterID = encounterID;
         this.pawnEnemyGroups = pawnEnemyGroups;
+        this.encounterLevel = encounterLevel;
+        this.encounterProbability = encounterProbability;   
+        this.pattern = pattern;
     }
 }

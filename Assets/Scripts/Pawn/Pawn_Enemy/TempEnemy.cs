@@ -10,102 +10,65 @@ public class PawnEnemy_Spade : AbstractPawnEnemy
     public override int sanity { get; set; } = 20;
     public override int maxSanity { get; set; } = 20;
 
-    public AbstractCard GetNormalAttackCard()
+    public class PawnEnemy_Spade_Card_Attack : AbstractCard
     {
-        AbstractCard NormalAttackCard = new AbstractCard()
+        public Pawn fromPawn;
+        public override string cardName { get; set; } = "Attack";
+        public override CardType cardType { get; set; } = CardType.Action;
+        public override int speed { get; set; } = Random.Range(0, 10);
+
+        private int damage = 5;
+
+        public PawnEnemy_Spade_Card_Attack(Pawn fromPawn)
         {
-            cardName = "Normal Attack",
-            cardDescription = "Deal 10 damage to all enemies",
-            cardImgPath = "",
-            cardType = CardType.NormalAttack,
-            cardCost = 0,
-            cardTarget = CardTarget.AllEnemies,
-            cardEffect = (Pawn targetPawn, Pawn userPawn) =>
-            {
-                PawnManager.Inst.enemyList.ForEach(enemy =>
-                {
-                    PawnBehaviorList.Inst.Behavior_Action_NormalAttack(userPawn, enemy, 10);
-                });
-            }
-        };
+            this.fromPawn = fromPawn;
+        }
 
-        return NormalAttackCard;
-    }
-}
+        public override void onUse()
+        {
+            PawnBehaviorList.Inst.Behavior_Action_NormalAttack(fromPawn, PawnManager.Inst.player, damage);
+        }
+    }   
 
-public class TempEnemy
-{
-    public AbstractPawnEnemy GetTempEnemySpade(AbstractPawnEnemy enemy)
+    public class PawnEnemy_Spade_Card_GetShield: AbstractCard
     {
-        // ID = "Spade"; 
-        enemy.pawnName = "Spade";
-        enemy.health = 100;
-        enemy.maxHealth = 100;
-        enemy.sanity = 100;
-        enemy.maxSanity = 100;
+        public Pawn fromPawn;
 
-        var normalAttackCard = new CardData()
+        public override string cardName { get; set; } = "GetShield";
+        public override CardType cardType { get; set; } = CardType.Action;
+        public override int speed { get; set; } = Random.Range(0, 10);
+
+        private int shield = 5;
+
+        public PawnEnemy_Spade_Card_GetShield(Pawn fromPawn)
         {
-            cardName = "Attack",
-            cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Action_NormalAttack(enemy, PawnManager.Inst.player, Random.Range(4, 6)) },
-            speed = Random.Range(0, 10)
-        };
+            this.fromPawn = fromPawn;
+        }
 
-        var shieldCard = new CardData()
+        public override void onUse()
         {
-            cardName = "Shield",
-            cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Action_GetShield(enemy, enemy, 5) },
-            speed = Random.Range(0, 10)
-        };
-        var powerCard = new CardData()
-        {
-            cardName = "Power",
-            cardEffect = new List<System.Action> { () => PawnBehaviorList.Inst.Behavior_Buff_Power(enemy, enemy, 1) },
-            speed = Random.Range(0, 10)
-        };
-
-        enemy.pattern = new Pattern()
-        {
-            acts = new List<Act>()
-                {
-                    new Act()
-                    {
-                        name = "Act_1",
-                        cardDatas = new List<CardData>()
-                        {
-                            normalAttackCard,
-                            shieldCard,
-                            powerCard
-                        }
-                    },
-                    new Act()
-                    {
-                        name = "Act_2",
-                        cardDatas = new List<CardData>()
-                        {
-                            normalAttackCard,
-                            powerCard,
-                            shieldCard
-                        }
-                    },
-                    new Act()
-                    {
-                        name = "Act_3",
-                        cardDatas = new List<CardData>()
-                        {
-                            shieldCard,
-                            powerCard,
-                            normalAttackCard
-                        }
-                    }
-                }
-        };
-
-
-        return enemy;
+            PawnBehaviorList.Inst.Behavior_Action_GetShield(fromPawn, PawnManager.Inst.player, shield);
+        }
     }
 
+    public class PawnEnemy_Spade_Card_Power: AbstractCard
+    {
+        public Pawn fromPawn;
 
+        public override string cardName { get; set; } = "Power";
+        public override CardType cardType { get; set; } = CardType.Skill;
+        public override int speed { get; set; } = Random.Range(0, 10);
 
+        private int sanity = 5;
 
+        public PawnEnemy_Spade_Card_Power(Pawn fromPawn)
+        {
+            this.fromPawn = fromPawn;
+        }
+
+        public override void onUse()
+        {
+            PawnBehaviorList.Inst.Behavior_Buff_Power(fromPawn, PawnManager.Inst.player, sanity);
+        }
+    }
 }

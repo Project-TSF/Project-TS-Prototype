@@ -8,6 +8,8 @@ using System;
 
 public class BattleManager : MonoBehaviour
 {
+    public Encounter currentEncounter;
+
     [Header("Slot Panel")]
 
     [SerializeField] GameObject slotPanel;
@@ -55,19 +57,22 @@ public class BattleManager : MonoBehaviour
 
     public void InitializeBattleEncounter()
     {
+        this.currentEncounter = GameManager.Inst.currentEncounter;
+
         // 디버그용
         dataLoader.AddPropToPool<TestProp_Blueberries>();
         dataLoader.AddPropToPool<TestProp_TimeBomb>();
 
 
+        PawnManager.Inst.InstEnemy<PawnEnemy_Spade>();
 
-        PawnManager.Inst.GetEnemy();
+
         dataLoader.poolProp[typeof(TestProp_Blueberries).ToString()].Invoke();
         
 
         // 여기까지 디버그용
 
-        maxActNum = PawnManager.Inst.enemyList[0].pattern.acts.Count - 1;
+        maxActNum = currentEncounter.pattern.acts.Count - 1;
         currentActNum = 0;
 
         OnPostEncounterInitializeEvent?.Invoke();
@@ -132,7 +137,7 @@ public class BattleManager : MonoBehaviour
         {
             if (!Application.isPlaying) break;
 
-            Debug.Log($"Use {slot.slotedCard.cardData.cardName}");
+            Debug.Log($"Use {slot.slotedCard.cardName}");
             await slot.slotedCard.UseEffect();
         }
 
@@ -208,7 +213,9 @@ public class BattleManager : MonoBehaviour
     void GetEnemyCard(int enemyCardIndex) // 적 카드를 Enemy에서 불러와 return하는 함수
     {
         Slot slot = slotsets[enemyCardIndex].enemySlot;
-        AbstractCard card = CardManager.Inst.MakeCard(new CardData()); // TODO: 적 카드 받는 함수 구현
+        
+        Type cardType = currentEncounter.pattern.acts[currentActNum].cards[enemyCardIndex];
+        AbstractCard card = CardManager.Inst.InstCard(cardType);
 
         // 적 카드 받아오기인데 나중에 위에 디버그쪽에 짜둔거 GetEnemyCard로 옮기기
         slot.slotedCard = card;
@@ -225,17 +232,6 @@ public class BattleManager : MonoBehaviour
             Utils.QI,
             slot.slotedCard.transform.localScale);
         slot.slotedCard.setVisible(true);
-
-        //TODO: 턴 종료 - 턴 시작 마다 enemyCard를 매번 새로 만들어야하는데 재활용 하면 성능 향상을 기대해 볼 수 있지 않을까?
-        CardData copyCardData = card.cardData;
-        CardData originalCardData = PawnManager.Inst.enemyList[0].pattern.acts[currentActNum].cardDatas[enemyCardIndex];
-
-        // copying carddata to card
-        card.name = originalCardData.cardName;
-        copyCardData.cardName = originalCardData.cardName;
-        copyCardData.isEnemyCard = true;
-        copyCardData.speed = originalCardData.speed;
-        copyCardData.cardEffect = originalCardData.cardEffect;
 
         card.UpdateUI();
     }
@@ -281,12 +277,12 @@ public class BattleManager : MonoBehaviour
                 return null;
             }
 
-            if (slotset.mySlot.slotedCard.cardData.speed < slotset.enemySlot.slotedCard.cardData.speed)
+            if (slotset.mySlot.slotedCard.speed < slotset.enemySlot.slotedCard.speed)
             {
                 timedQueue.Enqueue(slotset.mySlot);
                 timedQueue.Enqueue(slotset.enemySlot);
             }
-            else if (slotset.mySlot.slotedCard.cardData.speed > slotset.enemySlot.slotedCard.cardData.speed)
+            else if (slotset.mySlot.slotedCard.speed > slotset.enemySlot.slotedCard.speed)
             {
                 timedQueue.Enqueue(slotset.enemySlot);
                 timedQueue.Enqueue(slotset.mySlot);
@@ -305,11 +301,28 @@ public class BattleManager : MonoBehaviour
 
     #region Prop
     
-    public void InstProps<T>(string propID = null) where T : AbstractProp
+    public AbstractProp InstProps<T>(string propID = null) where T : AbstractProp
     {
         GameObject propObj = Instantiate(propPrefab);
         AbstractProp prop = propObj.AddComponent<T>() as AbstractProp;
 
+        AfterWorkPropInst(prop, propID);
+
+        return prop;
+    }
+
+    public AbstractProp InstProps(string propID, Type propType)
+    {
+        GameObject propObj = Instantiate(propPrefab);
+        AbstractProp prop = propObj.AddComponent(propType) as AbstractProp;
+
+        AfterWorkPropInst(prop, propID);
+
+        return prop;
+    }
+
+    private void AfterWorkPropInst(AbstractProp prop, string propID)
+    {
         if (propID == null)
         { 
             prop.ID = prop.GetType().ToString();

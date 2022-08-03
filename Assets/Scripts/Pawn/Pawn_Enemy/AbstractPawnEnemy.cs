@@ -5,11 +5,5 @@ using UnityEngine;
 
 public abstract class AbstractPawnEnemy : Pawn
 {
-    [Header("Enemy Attributes")]
 
-    // pattern of the pawn
-    public Pattern pattern;
-
-    // trigger
-    public Trigger trigger;
 }

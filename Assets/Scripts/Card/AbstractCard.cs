@@ -7,21 +7,23 @@ using DG.Tweening;
 using System.Threading.Tasks;
 
 [System.Serializable]
-public class AbstractCard : MonoBehaviour
+public abstract class AbstractCard : MonoBehaviour
 {
+    public abstract CardType cardType {get;set;}
+    public abstract string cardName {get;set;}
+    public abstract int speed {get;set;}
+    
+
     [SerializeField] SpriteRenderer card;
     [SerializeField] TMP_Text nameTMP;
     [SerializeField] TMP_Text speedTMP;
 
     public GameObject slot;
-    public CardData cardData;
     public PRS originPRS;
 
-    public void Setup(CardData cardData)
+    public void Setup()
     {
-        this.cardData = cardData;
-
-        this.cardData.speed = Random.Range(0, 10);
+        this.speed = Random.Range(0, 10);
 
         UpdateUI();
     }
@@ -30,8 +32,8 @@ public class AbstractCard : MonoBehaviour
 
     public void UpdateUI()
     {
-        nameTMP.text = this.cardData.cardName;
-        speedTMP.text = this.cardData.speed.ToString();
+        nameTMP.text = this.cardName;
+        speedTMP.text = this.speed.ToString();
     }
 
     public void MoveTransform(PRS prs, bool useDotween, float dotweenTime = 0)
@@ -83,7 +85,7 @@ public class AbstractCard : MonoBehaviour
     {
         Sequence seq = DOTween.Sequence()
             .Append(transform.DOMove(new Vector3(0, 0, 0), 0.5f).SetEase(Ease.OutQuad))
-            .AppendCallback(() => cardData.UseEffect())
+            .AppendCallback(() => onUse())
             .AppendInterval(0.5f)
             .Append(transform.DOMove(GameObject.Find("DiscardDeckPos").transform.position, 0.5f).SetEase(Ease.InQuad))
             .OnComplete(() => CardManager.Inst.DiscardCard(this) );
@@ -92,5 +94,19 @@ public class AbstractCard : MonoBehaviour
         BattleManager.Inst.UpdateUI();
     }
 
+    
+    public abstract void onUse();
+
     #endregion
+}
+
+
+public enum CardType
+{
+    Action,
+    Skill,
+    Power,
+
+    Enemy,
+    NG
 }

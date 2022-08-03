@@ -7,14 +7,12 @@ using DG.Tweening;
 
 public class PawnManager : MonoBehaviour
 {
-
-
     [SerializeField] Transform playerPos;   // 플레이어가 평소 서 있는 위치. 현재 위치와 헷갈릴 수 있다.
     [SerializeField] Transform enemyPos;
 
     public PawnPlayer player;
     public List<AbstractPawnEnemy> enemyList = new List<AbstractPawnEnemy>();
-    [SerializeField] AbstractPawnEnemy enemyPrefab;
+    [SerializeField] GameObject enemyPrefab;
 
     [Space]
 
@@ -57,13 +55,21 @@ public class PawnManager : MonoBehaviour
 
     #region Enemy
 
-    public void GetEnemy()
+    public void InstEnemy<T>() where T: AbstractPawnEnemy
     {
-        // enemyList.Add(ReadEnemyFromJson());
-        var enemy = Instantiate(enemyPrefab, enemyPos);
-        var enemyData = enemy.GetComponent<AbstractPawnEnemy>();
-        var tempEnemy = new TempEnemy();
-        enemyList.Add(tempEnemy.GetTempEnemySpade(enemyData));
+        GameObject enemy = Instantiate(enemyPrefab, enemyPos);
+        AbstractPawnEnemy enemyData = enemy.AddComponent<T>() as AbstractPawnEnemy;
+        enemyList.Add(enemyData);
+        UpdateUI();
+
+        return ;
+    }
+
+    public void InstEnemy(System.Type enemyType)
+    {
+        GameObject enemy = Instantiate(enemyPrefab, enemyPos);
+        AbstractPawnEnemy enemyData = enemy.AddComponent(enemyType) as AbstractPawnEnemy;
+        enemyList.Add(enemyData);
         UpdateUI();
 
         return ;
