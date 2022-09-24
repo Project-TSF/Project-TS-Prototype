@@ -6,7 +6,7 @@ public class TempCard_AttackCard : AbstractCard
 {
     public override CardType cardType { get; set; } = CardType.Action;
     public override string cardName { get; set; } = "Attack";
-    public override int speed { get; set; } = Random.Range(0, 10);
+    public override int speed { get; set; }
 
     int attackValue = 4;
 
@@ -20,7 +20,7 @@ public class TempCard_GetShieldCard : AbstractCard
 {
     public override CardType cardType { get; set; } = CardType.Action;
     public override string cardName { get; set; } = "Get Shield";
-    public override int speed { get; set; } = Random.Range(0, 10);
+    public override int speed { get; set; }
 
     int shieldValue = 5;
 
@@ -34,7 +34,7 @@ public class TempCard_PowerCard : AbstractCard
 {
     public override CardType cardType { get; set; } = CardType.Skill;
     public override string cardName { get; set; } = "Power";
-    public override int speed { get; set; } = Random.Range(0, 10);
+    public override int speed { get; set; }
 
     int powerValue = 1;
 

@@ -130,8 +130,6 @@ public class BattleManager : MonoBehaviour
         await GameObject.Find("BtnTogglePanel").GetComponent<UI_BtnTogglePanel>().ClosePanel();
         GameObject.Find("BtnTogglePanel").GetComponent<UI_BtnTogglePanel>().isAvailable = false;
         CardManager.Inst.isCardSelectable = false;
-        
-        //TODO: Delay 말고 다른 방법 찾아보기. 콜백이라던가...?
 
         foreach (Slot slot in timedQueue)
         {

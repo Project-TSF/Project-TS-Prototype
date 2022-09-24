@@ -15,13 +15,14 @@ public class PawnEnemy_Spade : AbstractPawnEnemy
         public Pawn fromPawn;
         public override string cardName { get; set; } = "Attack";
         public override CardType cardType { get; set; } = CardType.Action;
-        public override int speed { get; set; } = Random.Range(0, 10);
+        public override int speed { get; set; }
 
         private int damage = 5;
 
         public PawnEnemy_Spade_Card_Attack(Pawn fromPawn)
         {
             this.fromPawn = fromPawn;
+            this.speed = Random.Range(0, 10);
         }
 
         public override void onUse()
@@ -36,13 +37,14 @@ public class PawnEnemy_Spade : AbstractPawnEnemy
 
         public override string cardName { get; set; } = "GetShield";
         public override CardType cardType { get; set; } = CardType.Action;
-        public override int speed { get; set; } = Random.Range(0, 10);
+        public override int speed { get; set; }
 
         private int shield = 5;
 
         public PawnEnemy_Spade_Card_GetShield(Pawn fromPawn)
         {
             this.fromPawn = fromPawn;
+            this.speed = Random.Range(0, 10);
         }
 
         public override void onUse()
@@ -57,13 +59,14 @@ public class PawnEnemy_Spade : AbstractPawnEnemy
 
         public override string cardName { get; set; } = "Power";
         public override CardType cardType { get; set; } = CardType.Skill;
-        public override int speed { get; set; } = Random.Range(0, 10);
+        public override int speed { get; set; }
 
         private int sanity = 5;
 
         public PawnEnemy_Spade_Card_Power(Pawn fromPawn)
         {
             this.fromPawn = fromPawn;
+            this.speed = Random.Range(0, 10);
         }
 
         public override void onUse()
